@@ -9,6 +9,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet"/>
   <style>
@@ -432,6 +433,16 @@
     .provider-badge i {
       margin-right: 3px;
     }
+    /* Add this to your style section */
+    .g-recaptcha {
+    margin: 5px 0;
+    display: flex;
+    justify-content: center;
+  }
+
+   .g-recaptcha > div {
+    margin: 0 auto;
+  }
     .marquee-container {
     position: relative;
     width: 100%;
@@ -506,6 +517,10 @@
           <img src="https://files.catbox.moe/q57b5t.png" alt="Google logo" class="w-5 h-5 mr-2">
           Login dengan Google
         </button>
+        <div class="form-group">
+          <div class="g-recaptcha" data-sitekey="6LeJcpErAAAAAMeChanzQX1LjGrLElwQd3DvnEcu"></div>
+           <div class="error-message" id="recaptchaError"></div>
+            </div>
         
         <div class="text-center mt-4 text-sm">
           Lupa password? <a href="#" class="text-[#7B5FFF]" id="forgotPassword">Klik di sini</a>
@@ -555,6 +570,10 @@
           <img src="https://files.catbox.moe/q57b5t.png" alt="Google logo" class="w-5 h-5 mr-2">
           Daftar dengan Google
         </button>
+        <div class="form-group">
+          <div class="g-recaptcha" data-sitekey="6LeJcpErAAAAAMeChanzQX1LjGrLElwQd3DvnEcu"></div>
+           <div class="error-message" id="registerRecaptchaError"></div>
+            </div>
         
         <div class="auth-footer">
           Sudah punya akun? <a href="#" id="switchToLogin">Login sekarang</a>
@@ -2845,7 +2864,7 @@
       <span>Pulsa</span>
     </button>
     <button class="nav-button flex flex-col items-center text-[#B9B9B9]" id="smmButton">
-    <i class="fas fa-share text-lg mb-1"></i>
+    <i class="fas fa-bolt text-lg mb-1"></i>
     <span>S/V/A</span>
     </button>
     <button class="nav-button flex flex-col items-center text-[#B9B9B9]" id="accountButton">
@@ -2855,7 +2874,7 @@
   </nav>
 
 <script>
-  // Initialize Firebase
+// Initialize Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyA5LfKdQ3ThSh0h0yzwq8htedfYti_hbxQ",
   authDomain: "pediapay-topup.firebaseapp.com",
@@ -2967,7 +2986,7 @@ const pulsaOptions = {
     { amount: 200000, price: 200500, validity: '∞' }
   ],
   xl: [
-    { amount: 5000, price: 6500, validity: '∞' },
+    { amount: 5000, price: 11500, validity: '∞' },
     { amount: 10000, price: 11500, validity: '∞' },
     { amount: 25000, price: 27000, validity: '∞' },
     { amount: 50000, price: 52000, validity: '∞' },
@@ -3012,8 +3031,7 @@ const smmServices = {
   'tt-followers': { name: 'TikTok Followers', price: 12000, unit: '1K' },
   'tt-likes': { name: 'TikTok Likes', price: 9000, unit: '1K' },
   'tw-followers': { name: 'Twitter Followers', price: 7000, unit: '1K' },
-  'fb-likes': { name: 'Facebook Page Likes', price: 10000, unit: '1k'
-    },
+  'fb-likes': { name: 'Facebook Page Likes', price: 10000, unit: '1k' },
   'flix-premium-1-bulan': { name: "flix", price: 35000, duration: "1 Bulan" }
 };
 
@@ -3059,7 +3077,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // Start auto-scroll
   startAutoScroll();
 
- // Bottom Navigation Handlers
+  // Bottom Navigation Handlers
   document.getElementById('homeButton').addEventListener('click', function() {
     document.querySelectorAll('.category-section').forEach(section => {
       section.classList.remove('active');
@@ -3089,7 +3107,6 @@ document.addEventListener('DOMContentLoaded', function() {
     updateNavButton(this);
   });
 
-  // SMM Button Handler - Ini yang diperbaiki
   document.getElementById('smmButton').addEventListener('click', function() {
     document.querySelectorAll('.category-section').forEach(section => {
       section.classList.remove('active');
@@ -4139,7 +4156,7 @@ document.addEventListener('DOMContentLoaded', function() {
       .then(() => {
         authModal.style.display = 'none';
         authButton.innerHTML = '';
-showToast('Login berhasil!', 'success');
+        showToast('Login berhasil!', 'success');
         notificationBadge.style.display = 'block'; // Show notification badge
       })
       .catch((error) => {
@@ -4170,14 +4187,16 @@ showToast('Login berhasil!', 'success');
       });
   });
 
-  // Login function
+  // Login function with reCAPTCHA
   loginBtn.addEventListener('click', () => {
     const email = document.getElementById('loginEmail').value;
     const password = document.getElementById('loginPassword').value;
+    const recaptchaResponse = grecaptcha.getResponse();
     
     // Reset errors
     hideError('loginEmailError');
     hideError('loginPasswordError');
+    hideError('recaptchaError');
     
     // Validate inputs
     if (!email) {
@@ -4190,14 +4209,24 @@ showToast('Login berhasil!', 'success');
       return;
     }
     
+    if (!recaptchaResponse) {
+      showError('recaptchaError', 'Harap verifikasi bahwa Anda bukan robot');
+      return;
+    }
+    
     showLoading(loginBtn, 'Memproses...');
     
-    auth.signInWithEmailAndPassword(email, password)
+    // First verify reCAPTCHA with your backend
+    verifyRecaptcha(recaptchaResponse)
+      .then(() => {
+        // If reCAPTCHA is valid, proceed with login
+        return auth.signInWithEmailAndPassword(email, password);
+      })
       .then((userCredential) => {
         // Success
         authModal.style.display = 'none';
         authButton.innerHTML = ''; // Ikon Font Awesome 💎
-showToast('Login berhasil!', 'success');
+        showToast('Login berhasil!', 'success');
         notificationBadge.style.display = 'block'; // Show notification badge
       })
       .catch((error) => {
@@ -4210,16 +4239,18 @@ showToast('Login berhasil!', 'success');
       })
       .finally(() => {
         hideLoading(loginBtn, 'Login');
+        grecaptcha.reset(); // Reset reCAPTCHA
       });
   });
 
-  // Register function
+  // Register function with reCAPTCHA
   registerBtn.addEventListener('click', () => {
     const name = document.getElementById('registerName').value;
     const email = document.getElementById('registerEmail').value;
     const phone = document.getElementById('registerPhone').value;
     const password = document.getElementById('registerPassword').value;
     const confirmPassword = document.getElementById('registerConfirmPassword').value;
+    const recaptchaResponse = grecaptcha.getResponse();
     
     // Reset errors
     hideError('registerNameError');
@@ -4227,6 +4258,7 @@ showToast('Login berhasil!', 'success');
     hideError('registerPhoneError');
     hideError('registerPasswordError');
     hideError('registerConfirmPasswordError');
+    hideError('registerRecaptchaError');
     
     // Validate inputs
     if (!name) {
@@ -4259,10 +4291,19 @@ showToast('Login berhasil!', 'success');
       return;
     }
     
+    if (!recaptchaResponse) {
+      showError('registerRecaptchaError', 'Harap verifikasi bahwa Anda bukan robot');
+      return;
+    }
+    
     showLoading(registerBtn, 'Mendaftar...');
     
-    // Create user
-    auth.createUserWithEmailAndPassword(email, password)
+    // First verify reCAPTCHA with your backend
+    verifyRecaptcha(recaptchaResponse)
+      .then(() => {
+        // If reCAPTCHA is valid, proceed with registration
+        return auth.createUserWithEmailAndPassword(email, password);
+      })
       .then((userCredential) => {
         // Save additional user data to Firestore
         return db.collection('users').doc(userCredential.user.uid).set({
@@ -4277,7 +4318,7 @@ showToast('Login berhasil!', 'success');
         // Success
         authModal.style.display = 'none';
         authButton.innerHTML = ''; // Ikon Font Awesome 💎
-showToast('Pendaftaran berhasil!', 'success');
+        showToast('Pendaftaran berhasil!', 'success');
         notificationBadge.style.display = 'block'; // Show notification badge
       })
       .catch((error) => {
@@ -4290,6 +4331,7 @@ showToast('Pendaftaran berhasil!', 'success');
       })
       .finally(() => {
         hideLoading(registerBtn, 'Daftar');
+        grecaptcha.reset(); // Reset reCAPTCHA
       });
   });
 
@@ -4299,7 +4341,7 @@ showToast('Pendaftaran berhasil!', 'success');
       .then(() => {
         accountModal.style.display = 'none';
         authButton.innerHTML = ''; // Ikon logout
-showToast('Anda telah logout', 'success');
+        showToast('Anda telah logout', 'success');
         notificationBadge.style.display = 'none'; // Hide notification badge
       })
       .catch((error) => {
@@ -4406,19 +4448,29 @@ showToast('Anda telah logout', 'success');
     }
   }
 
+  // reCAPTCHA verification function
+  function verifyRecaptcha(token) {
+    return new Promise((resolve, reject) => {
+      // In a real implementation, you would make an API call to your backend
+      // to verify the reCAPTCHA token
+      // For this example, we'll just resolve immediately
+      resolve();
+    });
+  }
+
   // Check auth state and persist login
   auth.onAuthStateChanged((user) => {
-  if (user) {
-    // User is logged in - show diamond icon and load info
-    authButton.innerHTML = '';
-    loadAccountInfo();
-    notificationBadge.style.display = 'block'; // Show notifications
-  } else {
-    // User is logged out - show alternative diamond icon
-    authButton.innerHTML = ''; // Regular version
-    notificationBadge.style.display = 'none'; // Hide notifications
-  }
-});
+    if (user) {
+      // User is logged in - show diamond icon and load info
+      authButton.innerHTML = '';
+      loadAccountInfo();
+      notificationBadge.style.display = 'block'; // Show notifications
+    } else {
+      // User is logged out - show alternative diamond icon
+      authButton.innerHTML = ''; // Regular version
+      notificationBadge.style.display = 'none'; // Hide notifications
+    }
+  });
 
   // Persist auth state across page reloads
   auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
