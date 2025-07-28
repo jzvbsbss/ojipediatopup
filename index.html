@@ -4138,7 +4138,7 @@ document.addEventListener('DOMContentLoaded', function() {
       })
       .then(() => {
         authModal.style.display = 'none';
-        authButton.innerHTML = '<i class="fas fa-headset"></i>';
+        authButton.innerHTML = '';
 showToast('Login berhasil!', 'success');
         notificationBadge.style.display = 'block'; // Show notification badge
       })
@@ -4196,7 +4196,7 @@ showToast('Login berhasil!', 'success');
       .then((userCredential) => {
         // Success
         authModal.style.display = 'none';
-        authButton.innerHTML = '<i class="fas fa-headset"></i>'; // Ikon Font Awesome 💎
+        authButton.innerHTML = ''; // Ikon Font Awesome 💎
 showToast('Login berhasil!', 'success');
         notificationBadge.style.display = 'block'; // Show notification badge
       })
@@ -4276,7 +4276,7 @@ showToast('Login berhasil!', 'success');
       .then(() => {
         // Success
         authModal.style.display = 'none';
-        authButton.innerHTML = '<i class="fas fa-headset"></i>'; // Ikon Font Awesome 💎
+        authButton.innerHTML = ''; // Ikon Font Awesome 💎
 showToast('Pendaftaran berhasil!', 'success');
         notificationBadge.style.display = 'block'; // Show notification badge
       })
@@ -4298,7 +4298,7 @@ showToast('Pendaftaran berhasil!', 'success');
     auth.signOut()
       .then(() => {
         accountModal.style.display = 'none';
-        authButton.innerHTML = '<i class="fas fa-headset"></i>'; // Ikon logout
+        authButton.innerHTML = ''; // Ikon logout
 showToast('Anda telah logout', 'success');
         notificationBadge.style.display = 'none'; // Hide notification badge
       })
@@ -4410,12 +4410,12 @@ showToast('Anda telah logout', 'success');
   auth.onAuthStateChanged((user) => {
   if (user) {
     // User is logged in - show diamond icon and load info
-    authButton.innerHTML = '<i class="fas fa-headset"></i>';
+    authButton.innerHTML = '';
     loadAccountInfo();
     notificationBadge.style.display = 'block'; // Show notifications
   } else {
     // User is logged out - show alternative diamond icon
-    authButton.innerHTML = '<i class="fas fa-headset"></i>'; // Regular version
+    authButton.innerHTML = ''; // Regular version
     notificationBadge.style.display = 'none'; // Hide notifications
   }
 });
