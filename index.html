@@ -435,7 +435,7 @@
     }
     /* Add this to your style section */
     .g-recaptcha {
-    margin: 5px 0;
+    margin: 1px 0;
     display: flex;
     justify-content: center;
   }
@@ -468,6 +468,34 @@
       transform: translateX(-100%);
     }
   }
+  /* Add these to your existing social login button styles */
+.facebook-btn {
+  background: #00AEEF;
+  border: 1px solid #1877F2;
+}
+
+.facebook-btn:hover {
+  background: #00AEEF;
+  border-color: #00AEEF;
+}
+
+.facebook-btn i {
+  color: white;
+}
+
+.github-btn {
+  background: silver;
+  border: 1px solid #333;
+}
+
+.github-btn:hover {
+  background: silver;
+  border-color: silver;
+}
+
+.github-btn i {
+  color: white;
+}
 
   .marquee-text {
     display: inline-block;
@@ -475,6 +503,38 @@
     font-weight: bold;
     padding-right: 1rem;
   }
+  /* WhatsApp Groups Styles */
+.whatsapp-groups-container {
+  scrollbar-width: none; /* For Firefox */
+  -ms-overflow-style: none; /* For IE and Edge */
+}
+
+.whatsapp-groups-container::-webkit-scrollbar {
+  display: none; /* For Chrome, Safari and Opera */
+}
+
+.whatsapp-group {
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.whatsapp-group:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+}
+
+.join-group {
+  transition: all 0.2s ease;
+}
+
+.join-group:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(37, 211, 102, 0.4);
+}
+
+.join-group:active {
+  transform: translateY(0);
+}
     .telkomsel { color: #00AEEF; }
     .xl { color: #FF0000; }
     .axis { color: #FFD700; }
@@ -505,23 +565,31 @@
           <input type="password" id="loginPassword" placeholder="Masukkan password Anda">
           <div class="error-message" id="loginPasswordError"></div>
         </div>
-        <button class="w-full bg-gradient-to-r from-[#7B5FFF] to-[#A97FFF] rounded-md py-2 text-sm font-semibold mt-4 flex items-center justify-center" id="loginBtn">
-          <span id="loginBtnText">Login</span>
-          <div id="loginSpinner" class="spinner" style="display: none;"></div>
-        </button>
-        
-        <div class="divider">atau lanjutkan dengan</div>
-        
-        <!-- Social Login Buttons -->
-        <button class="social-login-btn google-btn" id="googleLoginBtn">
-          <img src="https://files.catbox.moe/q57b5t.png" alt="Google logo" class="w-5 h-5 mr-2">
-          Login dengan Google
-        </button>
         <div class="form-group">
           <div class="g-recaptcha" data-sitekey="6LeJcpErAAAAAMeChanzQX1LjGrLElwQd3DvnEcu"></div>
            <div class="error-message" id="recaptchaError"></div>
             </div>
+        <button class="w-full bg-gradient-to-r from-[#7B5FFF] to-[#A97FFF] rounded-md py-2 text-sm font-semibold mt-4 flex items-center justify-center" id="loginBtn"><i class="fas fa-sign-in-alt"></i><span id="loginBtnText">Login</span>
+          <div id="loginSpinner" class="spinner" style="display: none;"></div>
+        </button>
         
+        <div class="divider">atau login dengan</div>
+        
+        <!-- Social Login Buttons -->
+        <button class="social-login-btn google-btn" id="googleLoginBtn">
+          <img src="https://files.catbox.moe/q57b5t.png" alt="Google logo" class="w-5 h-5 mr-2">
+          Google
+        </button>
+         <button class="social-login-btn facebook-btn" id="facebookLoginBtn">
+          <img src="https://files.catbox.moe/nlwv65.png" alt="Google logo" class="w-5 h-5 mr-2">
+          Facebook
+        </button>
+
+        <button class="social-login-btn github-btn" id="githubLoginBtn">
+        <img src="https://files.catbox.moe/rklsom.png" alt="Google logo" class="w-5 h-5 mr-2">
+          Github
+        </button>
+
         <div class="text-center mt-4 text-sm">
           Lupa password? <a href="#" class="text-[#7B5FFF]" id="forgotPassword">Klik di sini</a>
         </div>
@@ -558,8 +626,11 @@
           <input type="password" id="registerConfirmPassword" placeholder="Konfirmasi password Anda">
           <div class="error-message" id="registerConfirmPasswordError"></div>
         </div>
-        <button class="w-full bg-gradient-to-r from-[#7B5FFF] to-[#A97FFF] rounded-md py-2 text-sm font-semibold mt-4 flex items-center justify-center" id="registerBtn">
-          <span id="registerBtnText">Daftar</span>
+        <div class="form-group">
+          <div class="g-recaptcha" data-sitekey="6LeJcpErAAAAAMeChanzQX1LjGrLElwQd3DvnEcu"></div>
+           <div class="error-message" id="registerRecaptchaError"></div>
+            </div>
+        <button class="w-full bg-gradient-to-r from-[#7B5FFF] to-[#A97FFF] rounded-md py-2 text-sm font-semibold mt-4 flex items-center justify-center" id="registerBtn"><i class="fas fa-sign-in-alt"></i><span id="registerBtnText">Daftar</span>
           <div id="registerSpinner" class="spinner" style="display: none;"></div>
         </button>
         
@@ -570,10 +641,6 @@
           <img src="https://files.catbox.moe/q57b5t.png" alt="Google logo" class="w-5 h-5 mr-2">
           Daftar dengan Google
         </button>
-        <div class="form-group">
-          <div class="g-recaptcha" data-sitekey="6LeJcpErAAAAAMeChanzQX1LjGrLElwQd3DvnEcu"></div>
-           <div class="error-message" id="registerRecaptchaError"></div>
-            </div>
         
         <div class="auth-footer">
           Sudah punya akun? <a href="#" id="switchToLogin">Login sekarang</a>
@@ -1103,8 +1170,8 @@
     <span class="marquee-text">Top Up Game & Pulsa Termurah - Aman & Terpercaya</span>
     <span class="marquee-text">PediaPay - Solusi Top Up: Harga Bersaing • Produk Lengkap • Transaksi Aman</span>
     <span class="marquee-text">Top Up Instan: FreeFire, MLBB, PUBG, Magic Chess & Lainnya!</span>
-    <span class="marquee-text">Pulsa All Operator • Sosial media Marketing • APK PREMIUM • Akun VIRTUAL PRIVATE NETWORK</span>
-    <span class="marquee-text">SMM Panel Terbaik: Followers IG, Likes, Views YouTube Murah! dll.</span>
+    <span class="marquee-text">Pulsa All Operator • Sosial media Marketing • APK PREMIUM • VIRTUAL PRIVATE NETWORK PREMIUM</span>
+    <span class="marquee-text">SMM Panel Terbaik: Followers IG, Likes, Views YouTube dll. Murah!</span>
     <span class="marquee-text">Promo Spesial! Diskon Hingga 20% untuk Top Up Pertama</span>
     <span class="marquee-text">Social Media Booster: Instagram, TikTok, Facebook, Twitter, dll.</span>
     <span class="marquee-text">Garansi Termurah - Layanan Lengkap - Transaksi Aman</span>
@@ -1113,8 +1180,8 @@
     <span class="marquee-text">Top Up Game & Pulsa Termurah - Aman & Terpercaya</span>
     <span class="marquee-text">PediaPay - Solusi Top Up: Harga Bersaing • Produk Lengkap • Transaksi Aman</span>
     <span class="marquee-text">Top Up Instan: FreeFire, MLBB, PUBG, Magic Chess & Lainnya!</span>
-    <span class="marquee-text">Pulsa All Operator • Sosial media Marketing • APK PREMIUM • Akun VIRTUAL PRIVATE NETWORK</span>
-    <span class="marquee-text">SMM Panel Terbaik: Followers IG, Likes, Views YouTube Murah! dll.</span>
+    <span class="marquee-text">Pulsa All Operator • Sosial media Marketing • APK PREMIUM • VIRTUAL PRIVATE NETWORK PREMIUM</span>
+    <span class="marquee-text">SMM Panel Terbaik: Followers IG, Likes, Views YouTube dll. Murah!</span>
     <span class="marquee-text">Promo Spesial! Diskon Hingga 20% untuk Top Up Pertama</span>
     <span class="marquee-text">Social Media Booster: Instagram, TikTok, Facebook, Twitter, dll.</span>
     <span class="marquee-text">Garansi Termurah - Layanan Lengkap - Transaksi Aman</span>
@@ -1123,8 +1190,8 @@
     <span class="marquee-text">Top Up Game & Pulsa Termurah - Aman & Terpercaya</span>
     <span class="marquee-text">PediaPay - Solusi Top Up: Harga Bersaing • Produk Lengkap • Transaksi Aman</span>
     <span class="marquee-text">Top Up Instan: FreeFire, MLBB, PUBG, Magic Chess & Lainnya!</span>
-    <span class="marquee-text">Pulsa All Operator • Sosial media Marketing • APK PREMIUM • Akun VIRTUAL PRIVATE NETWORK</span>
-    <span class="marquee-text">SMM Panel Terbaik: Followers IG, Likes, Views YouTube Murah! dll.</span>
+    <span class="marquee-text">Pulsa All Operator • Sosial media Marketing • APK PREMIUM • VIRTUAL PRIVATE NETWORK PREMIUM</span>
+    <span class="marquee-text">SMM Panel Terbaik: Followers IG, Likes, Views YouTube dll. Murah!</span>
     <span class="marquee-text">Promo Spesial! Diskon Hingga 20% untuk Top Up Pertama</span>
     <span class="marquee-text">Social Media Booster: Instagram, TikTok, Facebook, Twitter, dll.</span>
     <span class="marquee-text">Garansi Termurah - Layanan Lengkap - Transaksi Aman</span>
@@ -1186,6 +1253,118 @@
         <div class="banner-dot" data-slide="5"></div>
       </div>
     </div>
+    
+    <!-- WhatsApp Groups Section -->
+  <div class="mt-6">
+  <h2 class="text-[#6B63B5] font-semibold text-lg select-none">
+     <span class="font-bold text-white"></span>
+  </h2>
+  <div class="whatsapp-groups-container overflow-x-auto whitespace-nowrap pb-4">
+    <div class="whatsapp-groups flex space-x-3">
+      <!-- Grup 1 -->
+      <div class="whatsapp-group bg-[#3B2E7E] rounded-xl p-2 inline-block w-40">
+        <div class="relative h-20 mb-1">
+          <img src="https://files.catbox.moe/8tlhg4.jpg" alt="Grup 1" class="w-full h-full object-cover rounded-lg">
+          <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent h-1/2 rounded-b-lg"></div>
+          <div class="provider-badge">
+              <i class="fab fa-whatsapp text-green-500"></i>
+              <span class="text-white">GRUP WHATSAPP</span>
+            </div>
+        </div>
+        <h3 class="text-sm text-[#5F8BFF] font-bold">Preman Classic V1</h3>
+          <div class="flex justify-center text-yellow-400">
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+        </div>
+        <button class="w-full bg-gradient-to-r from-[#FF5F7E] to-[#FF8A9B] rounded-md py-2 text-xs font-semibold join-group"
+                data-group="Pt: Ilmu Hitam V2" 
+                data-link="https://chat.whatsapp.com/INVITE_LINK_1"><i class="fas fa-share text-black"></i>
+          Gabung Grup <i class="fas fa-link text-black"></i>
+        </button>
+      </div>
+      
+      <!-- Grup 2 -->
+      <div class="whatsapp-group bg-[#3B2E7E] rounded-xl p-2 inline-block w-40">
+        <div class="relative h-20 mb-1">
+          <img src="https://files.catbox.moe/8tlhg4.jpg" alt="Grup 1" class="w-full h-full object-cover rounded-lg">
+          <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent h-1/2 rounded-b-lg"></div>
+          <div class="provider-badge">
+              <i class="fab fa-whatsapp text-green-500"></i>
+              <span class="text-white">GRUP WHATSAPP</span>
+            </div>
+        </div>
+        <h3 class="text-sm text-[#5F8BFF] font-bold">Preman Classic V2</h3>
+          <div class="flex justify-center text-yellow-400">
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+        </div>
+        <button class="w-full bg-gradient-to-r from-[#FF5F7E] to-[#FF8A9B] rounded-md py-2 text-xs font-semibold join-group"
+                data-group="Pt: Ilmu Hitam V2" 
+                data-link="https://chat.whatsapp.com/INVITE_LINK_1"><i class="fas fa-share text-black"></i>
+          Gabung Grup <i class="fas fa-link text-black"></i>
+        </button>
+      </div>
+      
+      <!-- Grup 3 -->
+      <div class="whatsapp-group bg-[#3B2E7E] rounded-xl p-2 inline-block w-40">
+        <div class="relative h-20 mb-1">
+          <img src="https://files.catbox.moe/8tlhg4.jpg" alt="Grup 1" class="w-full h-full object-cover rounded-lg">
+          <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent h-1/2 rounded-b-lg"></div>
+          <div class="provider-badge">
+              <i class="fab fa-whatsapp text-green-500"></i>
+              <span class="text-white">GRUP WHATSAPP</span>
+            </div>
+        </div>
+        <h3 class="text-sm text-[#5F8BFF] font-bold">Pt: Ilmu Hitam V1</h3>
+          <div class="flex justify-center text-yellow-400">
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+        </div>
+        <button class="w-full bg-gradient-to-r from-[#FF5F7E] to-[#FF8A9B] rounded-md py-2 text-xs font-semibold join-group"
+                data-group="Pt: Ilmu Hitam V2" 
+                data-link="https://chat.whatsapp.com/INVITE_LINK_1"><i class="fas fa-share text-black"></i>
+          Gabung Grup <i class="fas fa-link text-black"></i>
+        </button>
+      </div>
+      
+      <!-- Grup 4 -->
+      <div class="whatsapp-group bg-[#3B2E7E] rounded-xl p-2 inline-block w-40">
+        <div class="relative h-20 mb-1">
+          <img src="https://files.catbox.moe/8tlhg4.jpg" alt="Grup 1" class="w-full h-full object-cover rounded-lg">
+          <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent h-1/2 rounded-b-lg"></div>
+          <div class="provider-badge">
+              <i class="fab fa-whatsapp text-green-500"></i>
+              <span class="text-white">GRUP WHATSAPP</span>
+            </div>
+        </div>
+        <h3 class="text-sm text-[#5F8BFF] font-bold">Pt: Ilmu Hitam V2</h3>
+          <div class="flex justify-center text-yellow-400">
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+        </div>
+        <button class="w-full bg-gradient-to-r from-[#FF5F7E] to-[#FF8A9B] rounded-md py-2 text-xs font-semibold join-group"
+                data-group="Pt: Ilmu Hitam V2" 
+                data-link="https://chat.whatsapp.com/INVITE_LINK_1"><i class="fas fa-share text-black"></i>
+          Gabung Grup <i class="fas fa-link text-black"></i>
+        </button>
+      </div>
+      
+      <!-- Tambahkan lebih banyak grup sesuai kebutuhan -->
+    </div>
+  </div>
+</div>
 
     <!-- Category Tabs1 -->
     <div class="category-tabs-container">
@@ -1214,7 +1393,7 @@
           <div class="w-10 h-10 bg-gradient-to-r from-[#5F8BFF] to-[#7FA9FF] rounded-full flex items-center justify-center mb-1">
             <i class="fas fa-coins text-white"></i>
           </div>
-          <span class="text-xs text-center">Cashback</span>
+          <span class="text-xs text-center">Cashbafck</span>
         </div>
         <div class="bg-[#3B2E7E] rounded-xl p-2 flex flex-col items-center">
           <div class="w-10 h-10 bg-gradient-to-r from-[#5FFF8B] to-[#7FFFA9] rounded-full flex items-center justify-center mb-1">
@@ -2873,24 +3052,32 @@
     </button>
   </nav>
 
+
 <script>
 // Initialize Firebase
 const firebaseConfig = {
-  apiKey: "AIzaSyA5LfKdQ3ThSh0h0yzwq8htedfYti_hbxQ",
-  authDomain: "pediapay-topup.firebaseapp.com",
-  projectId: "pediapay-topup",
-  storageBucket: "pediapay-topup.appspot.com",
-  messagingSenderId: "1008551355050",
-  appId: "1:1008551355050:web:abbb58878d9639656aa6d3",
-  measurementId: "G-26J59222HY"
+  apiKey: "AIzaSyDZ7NUQmA4zKDRqqLLr2Y_NP7TycKjm5z0",
+  authDomain: "topup-ojipediapay-id.firebaseapp.com",
+  databaseURL: "https://topup-ojipediapay-id-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "topup-ojipediapay-id",
+  storageBucket: "topup-ojipediapay-id.firebasestorage.app",
+  messagingSenderId: "9407539668",
+  appId: "1:9407539668:web:02b9bb2d72b41eb7e78e41",
+  measurementId: "G-5Q8DVRXC40"
 };
 
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
-// Initialize Google Auth Provider
-const provider = new firebase.auth.GoogleAuthProvider();
+// Initialize Auth Providers
+const googleProvider = new firebase.auth.GoogleAuthProvider();
+const facebookProvider = new firebase.auth.FacebookAuthProvider();
+const githubProvider = new firebase.auth.GithubAuthProvider();
+
+// Add scopes if needed
+facebookProvider.addScope('email');
+githubProvider.addScope('user:email');
 
 // Game top-up data
 const gameTopupOptions = {
@@ -3219,6 +3406,10 @@ document.addEventListener('DOMContentLoaded', function() {
   const forgotPassword = document.getElementById('forgotPassword');
   const googleLoginBtn = document.getElementById('googleLoginBtn');
   const googleRegisterBtn = document.getElementById('googleRegisterBtn');
+  const facebookLoginBtn = document.getElementById('facebookLoginBtn');
+  const facebookRegisterBtn = document.getElementById('facebookRegisterBtn');
+  const githubLoginBtn = document.getElementById('githubLoginBtn');
+  const githubRegisterBtn = document.getElementById('githubRegisterBtn');
   const switchToRegister = document.getElementById('switchToRegister');
   const switchToLogin = document.getElementById('switchToLogin');
   
@@ -3385,7 +3576,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Notification button
   notificationBtn.addEventListener('click', () => {
-    // In a real app, this would show notifications
     showToast('Tidak ada notifikasi baru', 'info');
     notificationBadge.style.display = 'none';
   });
@@ -4134,16 +4324,14 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
-  // Google Login
+  // Google Auth function
   function googleAuth() {
-    auth.signInWithPopup(provider)
+    auth.signInWithPopup(googleProvider)
       .then((result) => {
-        // Check if user is new
         const isNewUser = result.additionalUserInfo.isNewUser;
         const user = result.user;
         
         if (isNewUser) {
-          // Save user data to Firestore
           return db.collection('users').doc(user.uid).set({
             name: user.displayName || 'User',
             email: user.email,
@@ -4155,9 +4343,8 @@ document.addEventListener('DOMContentLoaded', function() {
       })
       .then(() => {
         authModal.style.display = 'none';
-        authButton.innerHTML = '';
-        showToast('Login berhasil!', 'success');
-        notificationBadge.style.display = 'block'; // Show notification badge
+        showToast('Login dengan Google berhasil!', 'success');
+        notificationBadge.style.display = 'block';
       })
       .catch((error) => {
         console.error('Google Auth Error:', error);
@@ -4165,8 +4352,69 @@ document.addEventListener('DOMContentLoaded', function() {
       });
   }
 
+  // Facebook Auth function
+  function facebookAuth() {
+    auth.signInWithPopup(facebookProvider)
+      .then((result) => {
+        const isNewUser = result.additionalUserInfo.isNewUser;
+        const user = result.user;
+        
+        if (isNewUser) {
+          return db.collection('users').doc(user.uid).set({
+            name: user.displayName || 'User',
+            email: user.email,
+            phone: user.phoneNumber || '',
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            balance: 0
+          });
+        }
+      })
+      .then(() => {
+        authModal.style.display = 'none';
+        showToast('Login dengan Facebook berhasil!', 'success');
+        notificationBadge.style.display = 'block';
+      })
+      .catch((error) => {
+        console.error('Facebook Auth Error:', error);
+        showToast('Login dengan Facebook gagal: ' + error.message, 'error');
+      });
+  }
+
+  // GitHub Auth function
+  function githubAuth() {
+    auth.signInWithPopup(githubProvider)
+      .then((result) => {
+        const isNewUser = result.additionalUserInfo.isNewUser;
+        const user = result.user;
+        
+        if (isNewUser) {
+          return db.collection('users').doc(user.uid).set({
+            name: user.displayName || 'User',
+            email: user.email,
+            phone: user.phoneNumber || '',
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            balance: 0
+          });
+        }
+      })
+      .then(() => {
+        authModal.style.display = 'none';
+        showToast('Login dengan GitHub berhasil!', 'success');
+        notificationBadge.style.display = 'block';
+      })
+      .catch((error) => {
+        console.error('GitHub Auth Error:', error);
+        showToast('Login dengan GitHub gagal: ' + error.message, 'error');
+      });
+  }
+
+  // Auth provider buttons
   googleLoginBtn.addEventListener('click', googleAuth);
   googleRegisterBtn.addEventListener('click', googleAuth);
+  facebookLoginBtn.addEventListener('click', facebookAuth);
+  facebookRegisterBtn.addEventListener('click', facebookAuth);
+  githubLoginBtn.addEventListener('click', githubAuth);
+  githubRegisterBtn.addEventListener('click', githubAuth);
 
   // Forgot password
   forgotPassword.addEventListener('click', (e) => {
@@ -4225,9 +4473,8 @@ document.addEventListener('DOMContentLoaded', function() {
       .then((userCredential) => {
         // Success
         authModal.style.display = 'none';
-        authButton.innerHTML = ''; // Ikon Font Awesome 💎
         showToast('Login berhasil!', 'success');
-        notificationBadge.style.display = 'block'; // Show notification badge
+        notificationBadge.style.display = 'block';
       })
       .catch((error) => {
         // Handle errors
@@ -4239,7 +4486,7 @@ document.addEventListener('DOMContentLoaded', function() {
       })
       .finally(() => {
         hideLoading(loginBtn, 'Login');
-        grecaptcha.reset(); // Reset reCAPTCHA
+        grecaptcha.reset();
       });
   });
 
@@ -4317,9 +4564,8 @@ document.addEventListener('DOMContentLoaded', function() {
       .then(() => {
         // Success
         authModal.style.display = 'none';
-        authButton.innerHTML = ''; // Ikon Font Awesome 💎
         showToast('Pendaftaran berhasil!', 'success');
-        notificationBadge.style.display = 'block'; // Show notification badge
+        notificationBadge.style.display = 'block';
       })
       .catch((error) => {
         // Handle errors
@@ -4331,7 +4577,7 @@ document.addEventListener('DOMContentLoaded', function() {
       })
       .finally(() => {
         hideLoading(registerBtn, 'Daftar');
-        grecaptcha.reset(); // Reset reCAPTCHA
+        grecaptcha.reset();
       });
   });
 
@@ -4340,9 +4586,8 @@ document.addEventListener('DOMContentLoaded', function() {
     auth.signOut()
       .then(() => {
         accountModal.style.display = 'none';
-        authButton.innerHTML = ''; // Ikon logout
         showToast('Anda telah logout', 'success');
-        notificationBadge.style.display = 'none'; // Hide notification badge
+        notificationBadge.style.display = 'none';
       })
       .catch((error) => {
         showToast('Gagal logout: ' + error.message, 'error');
@@ -4461,14 +4706,12 @@ document.addEventListener('DOMContentLoaded', function() {
   // Check auth state and persist login
   auth.onAuthStateChanged((user) => {
     if (user) {
-      // User is logged in - show diamond icon and load info
-      authButton.innerHTML = '';
+      // User is logged in
       loadAccountInfo();
-      notificationBadge.style.display = 'block'; // Show notifications
+      notificationBadge.style.display = 'block';
     } else {
-      // User is logged out - show alternative diamond icon
-      authButton.innerHTML = ''; // Regular version
-      notificationBadge.style.display = 'none'; // Hide notifications
+      // User is logged out
+      notificationBadge.style.display = 'none';
     }
   });
 
@@ -4482,6 +4725,62 @@ document.addEventListener('DOMContentLoaded', function() {
     .catch((error) => {
       console.error('Error setting auth persistence:', error);
     });
+
+  // WhatsApp Groups Auto-scroll
+  const whatsappGroups = document.querySelector('.whatsapp-groups');
+  if (whatsappGroups) {
+    let scrollSpeed = 1;
+    let scrollDirection = 1;
+
+    function autoScrollGroups() {
+      const scrollWidth = whatsappGroups.scrollWidth;
+      const clientWidth = whatsappGroups.clientWidth;
+      const currentScroll = whatsappGroups.scrollLeft;
+      
+      // Reverse direction if at end
+      if (currentScroll >= scrollWidth - clientWidth) {
+        scrollDirection = -1;
+      } else if (currentScroll <= 0) {
+        scrollDirection = 1;
+      }
+      
+      whatsappGroups.scrollLeft += scrollSpeed * scrollDirection;
+    }
+
+    // Start auto-scroll
+    let scrollInterval = setInterval(autoScrollGroups, 50);
+
+    // Pause on hover
+    whatsappGroups.addEventListener('mouseenter', () => {
+      clearInterval(scrollInterval);
+    });
+
+    whatsappGroups.addEventListener('mouseleave', () => {
+      scrollInterval = setInterval(autoScrollGroups, 50);
+    });
+
+    // Join group button click handler
+    document.querySelectorAll('.join-group').forEach(button => {
+      button.addEventListener('click', function() {
+        const groupName = this.getAttribute('data-group');
+        const groupLink = this.getAttribute('data-link');
+        
+        // Open WhatsApp group link in new tab
+        window.open(groupLink, '_blank');
+        
+        // Optional: Track group joins
+        if (auth.currentUser) {
+          db.collection('groupJoins').add({
+            userId: auth.currentUser.uid,
+            groupName: groupName,
+            joinedAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+        }
+        
+        showToast(`Bergabung dengan grup ${groupName}`, 'success');
+      });
+    });
+  }
 });
 </script>
 </body>
