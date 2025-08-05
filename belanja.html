@@ -1081,7 +1081,7 @@
           }
           
           this.hideAuthModal();
-          this.authButton.textContent = 'Akun Saya';
+          this.authButton.textContent = '';
           this.showToast('Login berhasil!');
         } catch (error) {
           console.error('Google Auth Error:', error);
@@ -1131,7 +1131,7 @@
         try {
           await auth.signInWithEmailAndPassword(email, password);
           this.hideAuthModal();
-          this.authButton.textContent = 'Akun Saya';
+          this.authButton.textContent = '';
           this.showToast('Login berhasil!');
         } catch (error) {
           // Handle errors
@@ -1207,7 +1207,7 @@
           
           // Success
           this.hideAuthModal();
-          this.authButton.textContent = 'Akun Saya';
+          this.authButton.textContent = '';
           this.showToast('Pendaftaran berhasil!');
         } catch (error) {
           // Handle errors
@@ -1225,7 +1225,7 @@
         try {
           await auth.signOut();
           this.hideAccountModal();
-          this.authButton.textContent = 'Login/Daftar';
+          this.authButton.textContent = '';
           this.showToast('Anda telah logout');
         } catch (error) {
           this.showToast('Gagal logout: ' + error.message, 'error');
@@ -1277,9 +1277,9 @@
       checkAuthState() {
         auth.onAuthStateChanged((user) => {
           if (user) {
-            this.authButton.textContent = 'Akun Saya';
+            this.authButton.textContent = '';
           } else {
-            this.authButton.textContent = 'Login/Daftar';
+            this.authButton.textContent = '';
           }
         });
         
