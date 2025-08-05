@@ -651,7 +651,7 @@
         <p class="text-[#B9B9B9] text-xs select-none">
           Moonton
         </p>
-        <button class="top-up-btn w-full rounded-md py-2 text-xs font-semibold" onclick="window.location.href='topup/ml.html'">
+        <button class="top-up-btn w-full rounded-md py-2 text-xs font-semibold" onclick="window.location.href='ml.html'">
           Top Up Sekarang
         </button>
       </div>
@@ -852,7 +852,7 @@
 
   <!-- Bottom Navigation -->
   <nav class="bottom-nav flex justify-around items-center text-xs font-semibold select-none">
-    <button class="nav-button active flex flex-col items-center text-[#7B5FFF]">
+    <button class="nav-button flex flex-col items-center text-[#B9B9B9]" id="homeButton">
       <i class="fas fa-home text-lg mb-1"></i>
       <span>Home</span>
     </button>
@@ -911,6 +911,9 @@
         this.accountButton = document.getElementById('accountButton');
         this.accountInfo = document.getElementById('accountInfo');
         this.logoutBtn = document.getElementById('logoutBtn');
+        
+        // Home button
+        this.homeButton = document.getElementById('homeButton');
         
         // Auth form elements
         this.loginTab = document.getElementById('loginTab');
@@ -990,6 +993,11 @@
             this.navButtons.forEach(btn => btn.classList.remove('active', 'text-[#7B5FFF]'));
             button.classList.add('active', 'text-[#7B5FFF]');
           });
+        });
+        
+        // Home button click handler
+        this.homeButton.addEventListener('click', () => {
+          window.location.href = 'dashboard.html';
         });
         
         // Auth modal
