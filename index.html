@@ -141,16 +141,6 @@
       transform: scale(0.95);
       transform-origin: 0 0;
     }
-
-    /* Error message styling */
-    .error-message {
-      color: #ef4444;
-      margin-top: 1rem;
-      padding: 0.5rem;
-      border-radius: 0.25rem;
-      background-color: rgba(239, 68, 68, 0.1);
-      border: 1px solid rgba(239, 68, 68, 0.3);
-    }
   </style>
 </head>
 <body class="bg-[#222] text-[#d9d9d9] min-h-screen flex flex-col justify-between p-6 sm:p-10">
@@ -199,9 +189,6 @@
     </div>
    </section>
    
-   <!-- Error message container -->
-   <div id="errorContainer" class="hidden error-message max-w-xl"></div>
-   
    <!-- reCAPTCHA loading container -->
    <div id="recaptchaLoading" class="hidden recaptcha-loading mt-4">
      <span></span>
@@ -230,14 +217,11 @@
   </footer>
 
   <script>
-   // Cloudflare API token
-   const CLOUDFLARE_API_TOKEN = "KF9ON-SDRb-bWs5ZywXYEZrKkGP29K8t6Obx6FhC";
-   
    // Simulate verification process with multiple loading animations
    let currentAnimation = 1;
    const animationInterval = setInterval(rotateAnimation, 1500);
    
-   function rotateAnimation() {
+    function rotateAnimation() {
      // Hide current animation
      document.getElementById(`loadingAnimation${currentAnimation}`).classList.add('hidden');
      
@@ -248,59 +232,13 @@
      document.getElementById(`loadingAnimation${currentAnimation}`).classList.remove('hidden');
    }
    
-   // Function to verify Cloudflare token
-   async function verifyCloudflareToken() {
-     try {
-       const response = await fetch("https://api.cloudflare.com/client/v4/user/tokens/verify", {
-         method: "GET",
-         headers: {
-           "Authorization": `Bearer ${CLOUDFLARE_API_TOKEN}`,
-           "Content-Type": "application/json"
-         }
-       });
-       
-       const data = await response.json();
-       
-       if (data.success) {
-         return true;
-       } else {
-         showError("Token verification failed. Please try again.");
-         return false;
-       }
-     } catch (error) {
-       showError("Network error during verification. Please check your connection.");
-       return false;
-     }
-   }
-   
-   // Function to show error messages
-   function showError(message) {
-     const errorContainer = document.getElementById('errorContainer');
-     errorContainer.textContent = message;
-     errorContainer.classList.remove('hidden');
-   }
-   
-   // Function to hide error messages
-   function hideError() {
-     document.getElementById('errorContainer').classList.add('hidden');
-   }
-   
-   setTimeout(async function() {
-     // First verify the Cloudflare token
-     const isTokenValid = await verifyCloudflareToken();
-     
-     if (!isTokenValid) {
-       // If token is invalid, stop the process
-       clearInterval(animationInterval);
-       document.getElementById('loadingAnimation1').classList.add('hidden');
-       return;
-     }
-     
+   setTimeout(function() {
      // Stop animation rotation
      clearInterval(animationInterval);
      
      // Hide all loading animations
      document.getElementById('loadingAnimation1').classList.add('hidden');
+     
      
      // Show checkbox
      document.getElementById('checkboxContainer').classList.remove('hidden');
