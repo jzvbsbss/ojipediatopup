@@ -20,11 +20,12 @@
   
   <style>
     :root {
-      --primary-color: #7B5FFF;
-      --secondary-color: #3B2E7E;
+      --primary-color: #4DA8F7;
+      --secondary-color: #4A8AE0;
       --dark-color: #2B2360;
       --light-accent: #6B63B5;
       --text-muted: #B9B9B9;
+      --light-blue: #9BD0FF;
     }
     
     body {
@@ -124,13 +125,13 @@
     
     .top-up-btn {
       transition: all 0.2s ease;
-      box-shadow: 0 2px 4px rgba(123, 95, 255, 0.3);
-      background: linear-gradient(to right, var(--primary-color), #A97FFF);
+      box-shadow: 0 2px 4px rgba(77, 168, 247, 0.3);
+      background: linear-gradient(to right, var(--primary-color), var(--light-blue));
     }
     
     .top-up-btn:hover {
       transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(123, 95, 255, 0.4);
+      box-shadow: 0 4px 8px rgba(77, 168, 247, 0.4);
     }
     
     .top-up-btn:active {
@@ -369,7 +370,7 @@
     width: 100%;
     overflow: hidden;
     white-space: nowrap;
-    background: linear-gradient(to right, #7B5FFF, #A97FFF);
+    background: linear-gradient(to right, var(--primary-color), var(--light-blue));
     border-radius: 0.1rem;
     padding: 0.25rem 0;
     margin: 0.25rem 0;
@@ -388,6 +389,7 @@
     100% {
       transform: translateX(-100%);
     }
+  }
   </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -426,7 +428,7 @@
         </button>
         
         <div class="text-center mt-4 text-sm">
-          Lupa password? <a href="#" class="text-[#7B5FFF]" id="forgotPassword">Klik di sini</a>
+          Lupa password? <a href="#" class="text-[#4DA8F7]" id="forgotPassword">Klik di sini</a>
         </div>
         
         <div class="auth-footer">
@@ -544,9 +546,9 @@
     <!-- Search Bar -->
     <div class="relative">
       <input type="text" placeholder="Cari game, voucher, atau produk..." 
-             class="w-full bg-[#3B2E7E] rounded-xl py-3 px-4 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-[#7B5FFF] placeholder-[#6B63B5]"
+             class="w-full bg-[#4A8AE0] rounded-xl py-3 px-4 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-[#4DA8F7] placeholder-[#FFFFFF]"
              aria-label="Search for games or products">
-      <i class="fas fa-search absolute right-3 top-3 text-[#6B63B5]"></i>
+      <i class="fas fa-search absolute right-3 top-3 text-[#FFFFFF]"></i>
     </div>
 
     <!-- Banner Section with Sliding Animation -->
@@ -589,25 +591,25 @@
 
     <!-- Promo Categories -->
     <div class="grid grid-cols-4 gap-3 pt-2">
-      <div class="bg-[#3B2E7E] rounded-xl p-2 flex flex-col items-center">
-        <div class="w-10 h-10 bg-gradient-to-r from-[#7B5FFF] to-[#A97FFF] rounded-full flex items-center justify-center mb-1">
+      <div class="bg-[#4A8AE0] rounded-xl p-2 flex flex-col items-center">
+        <div class="w-10 h-10 bg-gradient-to-r from-[#4DA8F7] to-[#9BD0FF] rounded-full flex items-center justify-center mb-1">
           <i class="fas fa-percentage text-white"></i>
         </div>
         <span class="text-xs text-center">Diskon</span>
       </div>
-      <div class="bg-[#3B2E7E] rounded-xl p-2 flex flex-col items-center">
+      <div class="bg-[#4A8AE0] rounded-xl p-2 flex flex-col items-center">
         <div class="w-10 h-10 bg-gradient-to-r from-[#FF5F7E] to-[#FF8A9B] rounded-full flex items-center justify-center mb-1">
           <i class="fas fa-gift text-white"></i>
         </div>
         <span class="text-xs text-center">Promo</span>
       </div>
-      <div class="bg-[#3B2E7E] rounded-xl p-2 flex flex-col items-center">
+      <div class="bg-[#4A8AE0] rounded-xl p-2 flex flex-col items-center">
         <div class="w-10 h-10 bg-gradient-to-r from-[#5F8BFF] to-[#7FA9FF] rounded-full flex items-center justify-center mb-1">
           <i class="fas fa-coins text-white"></i>
         </div>
         <span class="text-xs text-center">Cashback</span>
       </div>
-      <div class="bg-[#3B2E7E] rounded-xl p-2 flex flex-col items-center">
+      <div class="bg-[#4A8AE0] rounded-xl p-2 flex flex-col items-center">
         <div class="w-10 h-10 bg-gradient-to-r from-[#5FFF8B] to-[#7FFFA9] rounded-full flex items-center justify-center mb-1">
           <i class="fas fa-ticket-alt text-white"></i>
         </div>
@@ -616,20 +618,8 @@
     </div>
 
     <div class="flex justify-between items-center mt-3">
-      <div>
-        <h2 class="text-[#6B63B5] font-semibold text-lg select-none">
-          Game <span class="font-bold text-white">Populer</span>
-        </h2>
-        <p class="text-[#6B63B5] text-sm select-none">
-          Game yang paling banyak di topup saat ini...
-        </p>
-      </div>
-      <button class="text-white text-xs font-semibold bg-[#3B2E7E] rounded-md px-3 py-1 flex items-center space-x-1 select-none hover:bg-[#4A3D8E] transition">
-        <span>Lihat Semua</span>
-        <i class="fas fa-arrow-up-right-from-square text-xs"></i>
-      </button>
     </div>
-
+    
     <!-- Game Grid -->
     <div class="grid grid-cols-2 gap-4">
       <!-- Mobile Legends -->
@@ -990,8 +980,8 @@
         // Navigation buttons
         this.navButtons.forEach(button => {
           button.addEventListener('click', () => {
-            this.navButtons.forEach(btn => btn.classList.remove('active', 'text-[#7B5FFF]'));
-            button.classList.add('active', 'text-[#7B5FFF]');
+            this.navButtons.forEach(btn => btn.classList.remove('active', 'text-[#4DA8F7]'));
+            button.classList.add('active', 'text-[#4DA8F7]');
           });
         });
         
@@ -1251,7 +1241,7 @@
             const userData = doc.data();
             this.accountInfo.innerHTML = `
               <div class="flex items-center justify-center mb-4">
-                <div class="w-16 h-16 rounded-full bg-[#7B5FFF] flex items-center justify-center text-2xl font-bold">
+                <div class="w-16 h-16 rounded-full bg-[#4DA8F7] flex items-center justify-center text-2xl font-bold">
                   ${userData.name.charAt(0).toUpperCase()}
                 </div>
               </div>
@@ -1270,7 +1260,7 @@
                 </div>
                 <div class="flex justify-between">
                   <span class="text-[#B9B9B9]">Saldo:</span>
-                  <span class="font-medium text-[#7B5FFF]">Rp ${userData.balance?.toLocaleString() || '0'}</span>
+                  <span class="font-medium text-[#4DA8F7]">Rp ${userData.balance?.toLocaleString() || '0'}</span>
                 </div>
               </div>
             `;
