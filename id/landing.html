@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <title>Landing...</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap");
+    
+    body {
+      font-family: "Inter", sans-serif;
+      min-height: 100vh;
+      background-color: #0B2A5B;
+      background-image: url('https://storage.googleapis.com/a1aa/image/62279c52-967e-4947-2070-d8ea3208ac06.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
+    
+    /* Store name animation */
+    .store-name {
+      animation: colorChange 5s infinite alternate;
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      background-image: linear-gradient(90deg, #4DA8F7, #9BD0FF, #FFFFFF, #9BD0FF, #4DA8F7);
+      background-size: 300% 100%;
+    }
+    
+    @keyframes colorChange {
+      0% {
+        background-position: 0% 50%;
+      }
+      100% {
+        background-position: 100% 50%;
+      }
+    }
+    
+    /* Button animation */
+    .pulse-button {
+      animation: pulse 2s infinite;
+      box-shadow: 0 0 0 0 rgba(109, 177, 247, 0.7);
+    }
+    
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(109, 177, 247, 0.7);
+      }
+      70% {
+        transform: scale(1.02);
+        box-shadow: 0 0 0 15px rgba(109, 177, 247, 0);
+      }
+      100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(109, 177, 247, 0);
+      }
+    }
+    
+    .button-glow:hover {
+      box-shadow: 0 0 20px rgba(109, 177, 247, 0.8);
+    }
+    
+    /* Social media icons animation */
+    .social-icon {
+      transition: all 0.3s ease;
+    }
+    
+    .social-icon:hover {
+      transform: scale(1.2);
+      color: white !important;
+    }
+    
+    /* Fade-in animation */
+    .fade-in {
+      opacity: 0;
+      animation: fadeIn 1s ease-in forwards;
+    }
+    
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+      }
+    }
+    
+    /* Ripple effect for button */
+    .ripple-effect {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.4);
+      transform: scale(0);
+      animation: ripple 0.6s linear;
+      pointer-events: none;
+    }
+    
+    @keyframes ripple {
+      to {
+        transform: scale(4);
+        opacity: 0;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .max-w-md {
+        max-width: 90%;
+      }
+      
+      h1 {
+        font-size: 24px !important;
+      }
+      
+      h2 {
+        font-size: 28px !important;
+      }
+      
+      p {
+        font-size: 16px !important;
+      }
+      
+      button {
+        font-size: 16px !important;
+        padding: 12px !important;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center px-4 sm:px-6">
+  <div class="max-w-md w-full py-10">
+    <header class="flex items-center justify-center mb-6" data-aos="fade-down">
+      <div class="flex items-center space-x-3">
+        <div class="bg-white rounded-full p-2 flex items-center justify-center" style="width:40px; height:24px;">
+          <i class="fas fa-gamepad text-[#0B2A5B] text-[26px]"></i>
+        </div>
+        <h1 class="font-extrabold text-[28px] leading-[1.1] store-name">
+          OJIPEDIATOPUP
+        </h1>
+      </div>
+    </header>
+    
+    <p class="text-[#4A8AE0] font-semibold text-[16px] mb-3 text-center" data-aos="fade-up" data-aos-delay="100">
+      No.1 | Pusat Distributor Produk H2H
+    </p>
+    
+    <h2 class="font-extrabold text-[36px] leading-[1.1] text-[#9BD0FF] mb-6 text-center" data-aos="fade-up" data-aos-delay="200">
+      Platform Topup Game, SMM Panel &amp; OTP Terlengkap
+    </h2>
+    
+    <p class="text-[#9CA3AF] text-[18px] font-normal mb-10 leading-relaxed text-center" data-aos="fade-up" data-aos-delay="300">
+      Solusi cepat dan aman untuk topup game favorit Anda, layanan sosial media marketing, dan verifikasi OTP dengan harga terbaik dan proses instan.
+    </p>
+    
+    <div data-aos="zoom-in" data-aos-delay="400">
+      <button onclick="window.location.href='id/page/belanja.html'" 
+              class="w-full bg-gradient-to-r from-[#4DA8F7] to-[#6EB1F7] rounded-full py-3 text-white font-extrabold text-[18px] mb-5 hover:from-[#3A92E0] hover:to-[#5A9BE0] transition-all duration-300 pulse-button button-glow">
+        &gt; Klik Di Sini Untuk Belanja &lt;
+      </button>
+      <button onclick="window.location.href=('https://anime.com')" 
+              class="w-full bg-gradient-to-r from-[#4DA8F7] to-[#6EB1F7] rounded-full py-3 text-white font-extrabold text-[18px] mb-5 hover:from-[#3A92E0] hover:to-[#5A9BE0] transition-all duration-300 pulse-button button-glow">
+        &gt; Nonton Anime &lt;
+      </button>
+    </div>
+    
+    <div class="flex justify-center space-x-6 mt-8" data-aos="fade-up" data-aos-delay="500">
+      <a href="#" class="text-[#9BD0FF] text-2xl hover:text-white social-icon">
+        <i class="fab fa-whatsapp"></i>
+      </a>
+      <a href="#" class="text-[#9BD0FF] text-2xl hover:text-white social-icon">
+        <i class="fab fa-telegram"></i>
+      </a>
+      <a href="#" class="text-[#9BD0FF] text-2xl hover:text-white social-icon">
+        <i class="fab fa-instagram"></i>
+      </a>
+      <a href="#" class="text-[#9BD0FF] text-2xl hover:text-white social-icon">
+        <i class="fab fa-facebook"></i>
+      </a>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    // Initialize AOS (Animate On Scroll)
+    AOS.init({
+      duration: 800,
+      easing: 'ease-in-out',
+      once: true,
+      offset: 50
+    });
+    
+    document.querySelector('button').addEventListener('click', function() {
+      window.location.href = 'id/page/oji-pedia-topup.html';
+    });
+    
+    // Add ripple effect to button
+    document.querySelector('.pulse-button').addEventListener('click', function(e) {
+      let x = e.clientX - e.target.getBoundingClientRect().left;
+      let y = e.clientY - e.target.getBoundingClientRect().top;
+      
+      let ripple = document.createElement('span');
+      ripple.style.left = x + 'px';
+      ripple.style.top = y + 'px';
+      ripple.classList.add('ripple-effect');
+      
+      this.appendChild(ripple);
+      
+      setTimeout(() => {
+        ripple.remove();
+      }, 1000);
+    });
+  </script>
+</body>
+</html>
