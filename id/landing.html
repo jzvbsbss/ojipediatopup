@@ -332,8 +332,8 @@
       }
       
       button {
-        font-size: 16px !important;
-        padding: 12px !important;
+        font-size: 1px !important;
+        padding: 1px !important;
       }
       
       .floating-logo {
@@ -374,8 +374,8 @@
   <!-- Mobile Menu -->
   <div class="mobile-menu" id="mobileMenu">
     <a href="landing" class="fas fa-home pulse-button">Beranda</a>
-    <a href="oji-pedia-topup" class="fas fa-gem pulse-button">TOPUP</a>
-    <a href="#" class="fas fa-gift pulse-button">Promo</a>
+    <a href="oji-pedia-topup" class="fas fa-gem pulse-button">TopUp Sekarang</a>
+    <a href="#" onclick="window.location.href='https://anime.com'" class="fas fa-video pulse-button">Streaming Anime</a>
     <a href="#" class="fas fa-key pulse-button">Dokumen Api</a>
     <a href="#" class="fas fa-users pulse-button">Tentang Kami</a>
     <div class="flex justify-center space-x-6 mt-8">
@@ -407,18 +407,13 @@
       Platform Topup Game, SMM Panel &amp; OTP Terlengkap
     </h2>
     
-    <p class="text-[#9CA3AF] text-[18px] font-normal mb-10 leading-relaxed text-center">
+    <p class="text-white text-[16px] font-semibold mb-1 leading-relaxed text-center">
       Solusi cepat dan aman untuk topup game favorit Anda, layanan sosial media marketing, dan verifikasi OTP dengan harga terbaik dan proses instan.
     </p>
-    
     <div>
-      <button onclick="window.location.href='id/page/belanja.html'" 
-              class="w-full bg-gradient-to-r from-[#4DA8F7] to-[#6EB1F7] rounded-full py-3 text-white font-extrabold text-[18px] mb-5 hover:from-[#3A92E0] hover:to-[#5A9BE0] transition-all duration-300 pulse-button button-glow">
-        &gt; Klik Di Sini Untuk Belanja &lt;
+      <button onclick="window.location.href='oji-pedia-topup.html'" 
       </button>
       <button onclick="window.location.href=('https://anime.com')" 
-              class="w-full bg-gradient-to-r from-[#4DA8F7] to-[#6EB1F7] rounded-full py-3 text-white font-extrabold text-[18px] mb-5 hover:from-[#3A92E0] hover:to-[#5A9BE0] transition-all duration-300 pulse-button button-glow">
-        &gt; Streaming Anime &lt;
       </button>
     </div>
     
@@ -470,8 +465,28 @@
           <div class="whatsapp-group-name">SALURAN OJIPEDIA</div>
           <div class="whatsapp-group-desc">Saluran Resmi OJIPEDIA</div>
         </div>
-      </div>
-    </div>
+        <!-- Duplicate items for infinite scroll -->
+        <!-- Group 1 -->
+        <div class="whatsapp-group" onclick="window.open('https://chat.whatsapp.com/GhWoWN1GrejAnOZzCYtVsI?mode=ac_t', '_blank')">
+          <img src="https://files.catbox.moe/jlzxmw.jpg" alt="WhatsApp Group 1" class="whatsapp-group-img">
+          <div class="whatsapp-group-name">GRUP MABAR ALL TIER</div>
+          <div class="whatsapp-group-desc">Cari Temen Mabar</div>
+        </div>
+        
+        <!-- Group 2 -->
+        <div class="whatsapp-group" onclick="window.open('https://chat.whatsapp.com/CXLmQDEnBah24reQOz0zyj?mode=ac_t', '_blank')">
+          <img src="https://files.catbox.moe/8u57iy.jpg" alt="WhatsApp Group 2" class="whatsapp-group-img">
+          <div class="whatsapp-group-name">UP WR CLASSIC</div>
+          <div class="whatsapp-group-desc">Preman Upwr Clasik all tier</div>
+        </div>
+        
+        <!-- Group 3 -->
+        <div class="whatsapp-group" onclick="window.open('https://whatsapp.com/channel/0029VazPVqIHltYHwnowVf3w', '_blank')">
+          <img src="https://files.catbox.moe/r3itij.png" alt="WhatsApp Group 3" class="whatsapp-group-img">
+          <div class="whatsapp-group-name">SALURAN OJIPEDIA</div>
+          <div class="whatsapp-group-desc">Saluran Resmi OJIPEDIA</div>
+          </div>  
+        </div>
     
     <div class="flex justify-center space-x-6 mt-8">
       <a href="#" class="text-[#9BD0FF] text-2xl hover:text-white social-icon">
