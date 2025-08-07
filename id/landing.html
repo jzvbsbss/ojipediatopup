@@ -6,7 +6,6 @@
   <title>ojipediatopup</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
-  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
   <style>
     @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap");
     
@@ -18,19 +17,47 @@
       background-size: cover;
       background-position: center;
       background-attachment: fixed;
+      overflow-x: hidden;
     }
     
-    /* Store name animation */
+    .floating-logo {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 1001;
+      background-color: rgba(11, 42, 91, 0.7);
+      backdrop-filter: blur(10px);
+      padding: 10px 15px;
+      border-radius: 50px;
+      display: flex;
+      align-items: center;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(77, 168, 247, 0.3);
+      height: 50px;
+    }
+    
+    .logo-img {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 10px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+    
     .store-name {
-      animation: colorChange 5s infinite alternate;
       background-clip: text;
       -webkit-background-clip: text;
       color: transparent;
-      background-image: linear-gradient(90deg, #4DA8F7, #9BD0FF, #FFFFFF, #9BD0FF, #4DA8F7);
-      background-size: 300% 100%;
+      background-image: linear-gradient(90deg, 
+        #4DA8F7, #9BD0FF, #FFFFFF, #FFD700, #FFA500, #FFFFFF, #9BD0FF, #4DA8F7);
+      background-size: 400% 100%;
+      animation: gradientFlow 4s linear infinite;
+      text-shadow: 0 0 8px rgba(155, 208, 255, 0.5);
+      font-weight: 900;
     }
     
-    @keyframes colorChange {
+    @keyframes gradientFlow {
       0% {
         background-position: 0% 50%;
       }
@@ -39,7 +66,14 @@
       }
     }
     
-    /* Button animation */
+    .tagline {
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      background-image: linear-gradient(90deg, #9BD0FF, #4DA8F7, #9BD0FF, #FFFFFF, #9BD0FF);
+      background-size: 300% 100%;
+    }
+    
     .pulse-button {
       animation: pulse 2s infinite;
       box-shadow: 0 0 0 0 rgba(109, 177, 247, 0.7);
@@ -64,7 +98,6 @@
       box-shadow: 0 0 20px rgba(109, 177, 247, 0.8);
     }
     
-    /* Social media icons animation */
     .social-icon {
       transition: all 0.3s ease;
     }
@@ -74,7 +107,6 @@
       color: white !important;
     }
     
-    /* Fade-in animation */
     .fade-in {
       opacity: 0;
       animation: fadeIn 1s ease-in forwards;
@@ -86,7 +118,6 @@
       }
     }
     
-    /* Ripple effect for button */
     .ripple-effect {
       position: absolute;
       border-radius: 50%;
@@ -101,6 +132,186 @@
         transform: scale(4);
         opacity: 0;
       }
+    }
+    
+    .menu-toggle {
+      position: fixed;
+      top: 29px;
+      right: 20px;
+      z-index: 1000;
+      width: 40px;
+      height: 30px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .menu-toggle span {
+      display: block;
+      width: 100%;
+      height: 4px;
+      background-color: #FFFFFF;
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+    
+    .menu-toggle.active span:nth-child(1) {
+      transform: translateY(13px) rotate(45deg);
+    }
+    
+    .menu-toggle.active span:nth-child(2) {
+      opacity: 0;
+    }
+    
+    .menu-toggle.active span:nth-child(3) {
+      transform: translateY(-13px) rotate(-45deg);
+    }
+    
+    .mobile-menu {
+      position: fixed;
+      top: 0;
+      right: -100%;
+      width: 80%;
+      max-width: 300px;
+      height: 100vh;
+      background-color: rgba(11, 42, 91, 0.95);
+      backdrop-filter: blur(10px);
+      z-index: 999;
+      transition: all 0.5s ease;
+      padding: 80px 20px;
+      box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .mobile-menu.active {
+      right: 0;
+    }
+    
+    .mobile-menu a {
+      display: block;
+      color: #9BD0FF;
+      font-size: 18px;
+      padding: 15px;
+      margin-bottom: 10px;
+      text-decoration: none;
+      border-radius: 5px;
+      transition: all 0.3s ease;
+      text-align: center;
+    }
+    
+    .mobile-menu a:hover {
+      background-color: rgba(77, 168, 247, 0.2);
+      color: white;
+      transform: translateX(-5px);
+    }
+    
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 998;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+    
+    .overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    /* WhatsApp Group Styles */
+    .whatsapp-groups-container {
+      margin-top: 1px;
+      padding: 1px 0;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .whatsapp-groups-title {
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: #4DA8F7;
+      text-shadow: 0 0 10px rgba(77, 168, 247, 0.5);
+    }
+    
+    .whatsapp-groups-carousel {
+      display: flex;
+      gap: 20px;
+      padding: 10px 0;
+      animation: scroll 30s linear infinite;
+      width: calc(250px * 10);
+    }
+    
+    .whatsapp-group {
+      min-width: 230px;
+      background: rgba(11, 42, 91, 0.7);
+      border-radius: 15px;
+      padding: 15px;
+      text-align: center;
+      backdrop-filter: blur(5px);
+      border: 2px solid rgba(77, 168, 247, 0.3);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .whatsapp-group:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+      border-color: #4DA8F7;
+      background: rgba(11, 42, 91, 0.9);
+    }
+    
+    .whatsapp-group-img {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      border: 2px solid rgba(77, 168, 247, 0.5);
+      transition: all 0.3s ease;
+    }
+    
+    .whatsapp-group:hover .whatsapp-group-img {
+      border-color: #25D366;
+      box-shadow: 0 0 15px rgba(37, 211, 102, 0.3);
+    }
+    
+    .whatsapp-group-name {
+      font-weight: bold;
+      color: white;
+      margin-bottom: 5px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    .whatsapp-group-desc {
+      font-size: 12px;
+      color: #9BD0FF;
+      margin-bottom: 10px;
+    }
+    
+    @keyframes scroll {
+      0% {
+        transform: translateX(0);
+      }
+      100% {
+        transform: translateX(calc(-250px * 5));
+      }
+    }
+    
+    .whatsapp-groups-carousel:hover {
+      animation-play-state: paused;
     }
     
     @media (max-width: 768px) {
@@ -124,46 +335,50 @@
         font-size: 16px !important;
         padding: 12px !important;
       }
+      
+      .floating-logo {
+        padding: 8px 12px;
+        left: 10px;
+      }
+      
+      .whatsapp-groups-title {
+        font-size: 20px;
+      }
+      
+      .whatsapp-group {
+        min-width: 200px;
+      }
+      
+      .whatsapp-group-img {
+        height: 100px;
+      }
     }
   </style>
 </head>
 <body class="min-h-screen flex items-center justify-center px-4 sm:px-6">
-  <div class="max-w-md w-full py-10">
-    <header class="flex items-center justify-center mb-6" data-aos="fade-down">
-      <div class="flex items-center space-x-3">
-        <div class="bg-white rounded-full p-2 flex items-center justify-center" style="width:40px; height:24px;">
-          <i class="fas fa-gamepad text-[#0B2A5B] text-[26px]"></i>
-        </div>
-        <h1 class="font-extrabold text-[28px] leading-[1.1] store-name">
-          OJIPEDIATOPUP
-        </h1>
-      </div>
-    </header>
-    
-    <p class="text-[#4A8AE0] font-semibold text-[16px] mb-3 text-center" data-aos="fade-up" data-aos-delay="100">
-      No.1 | Pusat Distributor Produk H2H
-    </p>
-    
-    <h2 class="font-extrabold text-[36px] leading-[1.1] text-[#9BD0FF] mb-6 text-center" data-aos="fade-up" data-aos-delay="200">
-      Platform Topup Game, SMM Panel &amp; OTP Terlengkap
-    </h2>
-    
-    <p class="text-[#9CA3AF] text-[18px] font-normal mb-10 leading-relaxed text-center" data-aos="fade-up" data-aos-delay="300">
-      Solusi cepat dan aman untuk topup game favorit Anda, layanan sosial media marketing, dan verifikasi OTP dengan harga terbaik dan proses instan.
-    </p>
-    
-    <div data-aos="zoom-in" data-aos-delay="400">
-      <button onclick="window.location.href='id/page/belanja.html'" 
-              class="w-full bg-gradient-to-r from-[#4DA8F7] to-[#6EB1F7] rounded-full py-3 text-white font-extrabold text-[18px] mb-5 hover:from-[#3A92E0] hover:to-[#5A9BE0] transition-all duration-300 pulse-button button-glow">
-        &gt; Klik Di Sini Untuk Belanja &lt;
-      </button>
-      <button onclick="window.location.href=('https://anime.com')" 
-              class="w-full bg-gradient-to-r from-[#4DA8F7] to-[#6EB1F7] rounded-full py-3 text-white font-extrabold text-[18px] mb-5 hover:from-[#3A92E0] hover:to-[#5A9BE0] transition-all duration-300 pulse-button button-glow">
-        &gt; Streaming Anime &lt;
-      </button>
-    </div>
-    
-    <div class="flex justify-center space-x-6 mt-8" data-aos="fade-up" data-aos-delay="500">
+  <!-- Floating Logo with image -->
+  <div class="floating-logo">
+    <img src="https://files.catbox.moe/iekuld.png" alt="OJIPEDIATOPUP Logo" class="logo-img">
+    <h1 class="font-extrabold text-[28px] leading-[1.1] store-name">
+      OJIPEDIATOPUP
+    </h1>
+  </div>
+  
+  <!-- Hamburger Menu Toggle -->
+  <div class="menu-toggle" id="menuToggle">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+  
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#" class="fas fa-home pulse-button">Beranda</a>
+    <a href="id/oji-pedia-topup.html" class="fas fa-bolt pulse-button">produk</a>
+    <a href="#" class="fas fa-gift pulse-button">Promo</a>
+    <a href="#" class="fas fa-key pulse-button">Dokumen Api</a>
+    <a href="#" class="fas fa-users pulse-button">Tentang Kami</a>
+    <div class="flex justify-center space-x-6 mt-8">
       <a href="#" class="text-[#9BD0FF] text-2xl hover:text-white social-icon">
         <i class="fab fa-whatsapp"></i>
       </a>
@@ -178,17 +393,103 @@
       </a>
     </div>
   </div>
-
-  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-  <script>
-    // Initialize AOS (Animate On Scroll)
-    AOS.init({
-      duration: 800,
-      easing: 'ease-in-out',
-      once: true,
-      offset: 50
-    });
+  
+  <!-- Overlay -->
+  <div class="overlay" id="overlay"></div>
+  
+  <!-- Main Content -->
+  <div class="max-w-md w-full py-20">
+    <p class="text-[#4A8AE0] font-semibold text-[16px] mb-3 text-center">
+      No.1 | Pusat Distributor Produk H2H
+    </p>
     
+    <h2 class="font-extrabold text-[36px] leading-[1.1] tagline mb-6 text-center">
+      Platform Topup Game, SMM Panel &amp; OTP Terlengkap
+    </h2>
+    
+    <p class="text-[#9CA3AF] text-[18px] font-normal mb-10 leading-relaxed text-center">
+      Solusi cepat dan aman untuk topup game favorit Anda, layanan sosial media marketing, dan verifikasi OTP dengan harga terbaik dan proses instan.
+    </p>
+    
+    <div>
+      <button onclick="window.location.href='id/page/belanja.html'" 
+              class="w-full bg-gradient-to-r from-[#4DA8F7] to-[#6EB1F7] rounded-full py-3 text-white font-extrabold text-[18px] mb-5 hover:from-[#3A92E0] hover:to-[#5A9BE0] transition-all duration-300 pulse-button button-glow">
+        &gt; Klik Di Sini Untuk Belanja &lt;
+      </button>
+      <button onclick="window.location.href=('https://anime.com')" 
+              class="w-full bg-gradient-to-r from-[#4DA8F7] to-[#6EB1F7] rounded-full py-3 text-white font-extrabold text-[18px] mb-5 hover:from-[#3A92E0] hover:to-[#5A9BE0] transition-all duration-300 pulse-button button-glow">
+        &gt; Streaming Anime &lt;
+      </button>
+    </div>
+    
+    <!-- WhatsApp Groups Carousel -->
+    <div class="whatsapp-groups-container">
+      <div class="whatsapp-groups-title">
+        <i class="fab fa-whatsapp"></i> Gabung Grup WhatsApp Kami
+      </div>
+      <div class="whatsapp-groups-carousel">
+        <!-- Group 1 -->
+        <div class="whatsapp-group" onclick="window.open('https://chat.whatsapp.com/GhWoWN1GrejAnOZzCYtVsI?mode=ac_t', '_blank')">
+          <img src="https://files.catbox.moe/jlzxmw.jpg" alt="WhatsApp Group 1" class="whatsapp-group-img">
+          <div class="whatsapp-group-name">GRUP MABAR ALL TIER</div>
+          <div class="whatsapp-group-desc">Cari Temen Mabar</div>
+        </div>
+        
+        <!-- Group 2 -->
+        <div class="whatsapp-group" onclick="window.open('https://chat.whatsapp.com/CXLmQDEnBah24reQOz0zyj?mode=ac_t', '_blank')">
+          <img src="https://files.catbox.moe/8u57iy.jpg" alt="WhatsApp Group 2" class="whatsapp-group-img">
+          <div class="whatsapp-group-name">UP WR CLASSIC</div>
+          <div class="whatsapp-group-desc">Preman Upwr Clasik all tier</div>
+        </div>
+        
+        <!-- Group 3 -->
+        <div class="whatsapp-group" onclick="window.open('https://whatsapp.com/channel/0029VazPVqIHltYHwnowVf3w', '_blank')">
+          <img src="https://files.catbox.moe/r3itij.png" alt="WhatsApp Group 3" class="whatsapp-group-img">
+          <div class="whatsapp-group-name">SALURAN OJIPEDIA</div>
+          <div class="whatsapp-group-desc">Saluran Resmi OJIPEDIA</div>
+        </div>
+        
+        <!-- Duplicate items for infinite scroll -->
+        <!-- Group 1 -->
+        <div class="whatsapp-group" onclick="window.open('https://chat.whatsapp.com/GhWoWN1GrejAnOZzCYtVsI?mode=ac_t', '_blank')">
+          <img src="https://files.catbox.moe/jlzxmw.jpg" alt="WhatsApp Group 1" class="whatsapp-group-img">
+          <div class="whatsapp-group-name">GRUP MABAR ALL TIER</div>
+          <div class="whatsapp-group-desc">Cari Temen Mabar</div>
+        </div>
+        
+        <!-- Group 2 -->
+        <div class="whatsapp-group" onclick="window.open('https://chat.whatsapp.com/CXLmQDEnBah24reQOz0zyj?mode=ac_t', '_blank')">
+          <img src="https://files.catbox.moe/8u57iy.jpg" alt="WhatsApp Group 2" class="whatsapp-group-img">
+          <div class="whatsapp-group-name">UP WR CLASSIC</div>
+          <div class="whatsapp-group-desc">Preman Upwr Clasik all tier</div>
+        </div>
+        
+        <!-- Group 3 -->
+        <div class="whatsapp-group" onclick="window.open('https://whatsapp.com/channel/0029VazPVqIHltYHwnowVf3w', '_blank')">
+          <img src="https://files.catbox.moe/r3itij.png" alt="WhatsApp Group 3" class="whatsapp-group-img">
+          <div class="whatsapp-group-name">SALURAN OJIPEDIA</div>
+          <div class="whatsapp-group-desc">Saluran Resmi OJIPEDIA</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="flex justify-center space-x-6 mt-8">
+      <a href="#" class="text-[#9BD0FF] text-2xl hover:text-white social-icon">
+        <i class="fab fa-whatsapp"></i>
+      </a>
+      <a href="#" class="text-[#9BD0FF] text-2xl hover:text-white social-icon">
+        <i class="fab fa-telegram"></i>
+      </a>
+      <a href="#" class="text-[#9BD0FF] text-2xl hover:text-white social-icon">
+        <i class="fab fa-instagram"></i>
+      </a>
+      <a href="#" class="text-[#9BD0FF] text-2xl hover:text-white social-icon">
+        <i class="fab fa-facebook"></i>
+      </a>
+    </div>
+  </div>
+    
+  <script>
     document.querySelector('button').addEventListener('click', function() {
       window.location.href = 'oji-pedia-topup';
     });
@@ -208,6 +509,58 @@
       setTimeout(() => {
         ripple.remove();
       }, 1000);
+    });
+    
+    // Hamburger menu functionality
+    const menuToggle = document.getElementById('menuToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const overlay = document.getElementById('overlay');
+    
+    menuToggle.addEventListener('click', function() {
+      this.classList.toggle('active');
+      mobileMenu.classList.toggle('active');
+      overlay.classList.toggle('active');
+      
+      // Toggle body scroll
+      if (mobileMenu.classList.contains('active')) {
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = 'auto';
+      }
+    });
+    
+    overlay.addEventListener('click', function() {
+      menuToggle.classList.remove('active');
+      mobileMenu.classList.remove('active');
+      this.classList.remove('active');
+      document.body.style.overflow = 'auto';
+    });
+    
+    // Add animation to menu items
+    const menuItems = document.querySelectorAll('.mobile-menu a');
+    menuItems.forEach((item, index) => {
+      item.style.transitionDelay = `${index * 0.1}s`;
+    });
+    
+    // WhatsApp group carousel functionality
+    const carousel = document.querySelector('.whatsapp-groups-carousel');
+    const groups = document.querySelectorAll('.whatsapp-group');
+    
+    // Clone groups for infinite scroll effect
+    groups.forEach(group => {
+      const clone = group.cloneNode(true);
+      carousel.appendChild(clone);
+    });
+    
+    // Pause animation when hovering over a group
+    groups.forEach(group => {
+      group.addEventListener('mouseenter', () => {
+        carousel.style.animationPlayState = 'paused';
+      });
+      
+      group.addEventListener('mouseleave', () => {
+        carousel.style.animationPlayState = 'running';
+      });
     });
   </script>
 </body>
