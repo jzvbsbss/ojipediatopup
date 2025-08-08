@@ -1,0 +1,1538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp-like Group Chat</title>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --whatsapp-green: #34B7F1;
+            --whatsapp-green-dark: rgba(11, 42, 91, 0.99);
+            --whatsapp-light: #dcf8c6;
+            --whatsapp-gray: #ece5dd;
+            --whatsapp-dark-gray: #4a4a4a;
+            --whatsapp-blue: #34B7F1;
+            --whatsapp-time-gray: #9a9a9a;
+            --whatsapp-chat-bg: #e5ddd5;
+            --whatsapp-input-bg: #f0f0f0;
+            --whatsapp-vn-bg: #f1f3f4;
+            --whatsapp-vn-active: #e6f2ff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Helvetica, Arial, sans-serif;
+            height: 100vh;
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        
+        #app-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            max-width: 1000px;
+            margin: 0 auto;
+            box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        #login-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            width: 90%;
+            max-width: 400px;
+            margin: auto;
+            text-align: center;
+        }
+        
+        #chat-container {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+            background-color: var(--whatsapp-chat-bg);
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%239C92AC' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+        }
+        
+        .chat-header {
+            background-color: var(--whatsapp-green-dark);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .chat-header-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .chat-header-logo {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .chat-header h2 {
+            font-size: 18px;
+            font-weight: 500;
+            margin: 0;
+        }
+        
+        .animated-title {
+            position: relative;
+            display: inline-block;
+            overflow: hidden;
+        }
+        
+        .animated-title span {
+            display: inline-block;
+            position: relative;
+            animation: colorChange 3s infinite alternate, slide 5s infinite linear;
+            background: linear-gradient(90deg, #9BD0FF, #FFFFFF, #FFD700, #FFA500);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 5px rgba(77, 168, 247, 0.3);
+        }
+        
+        @keyframes colorChange {
+            0%, 100% {
+                background: linear-gradient(90deg, #9BD0FF, #FFFFFF, #red, #FFD, #pink, #9BD, #4DA8);
+                -webkit-background-clip: text;
+                background-clip: text;
+                color: transparent;
+            }
+            50% {
+                background: linear-gradient(90deg, #9BD0FF, #FFFFFF, #FFD700, #FFA500, #FFFFFF, #9BD0FF, #4DA8F7);
+                -webkit-background-clip: text;
+                background-clip: text;
+                color: transparent;
+            }
+        }
+        
+        
+        .chat-header-actions {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .chat-header-actions i {
+            cursor: pointer;
+            font-size: 18px;
+        }
+        
+        #chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .message {
+            max-width: 70%;
+            padding: 8px 12px;
+            border-radius: 8px;
+            position: relative;
+            word-wrap: break-word;
+            animation: fadeIn 0.3s ease;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .other-message {
+            background-color: white;
+            align-self: flex-start;
+            border-top-left-radius: 0;
+            box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+        }
+        
+        .my-message {
+            background-color: var(--whatsapp-light);
+            align-self: flex-end;
+            border-top-right-radius: 0;
+            box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+        }
+        
+        .message-info {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 4px;
+            font-size: 11px;
+            color: var(--whatsapp-time-gray);
+        }
+        
+        .message-sender {
+            font-weight: 600;
+            color: var(--whatsapp-green-dark);
+            margin-bottom: 2px;
+        }
+        
+        .my-message .message-sender {
+            display: none;
+        }
+        
+        .message-time {
+            margin-left: 10px;
+            white-space: nowrap;
+        }
+        
+        .expiry-timer {
+            font-size: 10px;
+            color: #d9534f;
+            margin-top: 2px;
+            font-style: italic;
+        }
+        
+        .expiring-soon {
+            background-color: #fff3cd;
+        }
+        
+        .chat-footer {
+            background-color: var(--whatsapp-input-bg);
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-top: 1px solid #ddd;
+        }
+        
+        #message-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 20px;
+            font-size: 15px;
+            outline: none;
+            background-color: white;
+        }
+        
+        #send-btn {
+            background-color: var(--whatsapp-green);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        #send-btn:hover {
+            background-color: var(--whatsapp-green-dark);
+        }
+        
+        #send-btn i {
+            font-size: 18px;
+        }
+        
+        .typing-indicator {
+            padding: 0 15px 5px;
+            font-size: 12px;
+            color: var(--whatsapp-time-gray);
+            font-style: italic;
+            height: 20px;
+        }
+        
+        #login-container h2 {
+            color: var(--whatsapp-green-dark);
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        
+        #username {
+            padding: 12px 15px;
+            width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            font-size: 15px;
+            margin-bottom: 15px;
+            outline: none;
+            transition: border 0.3s;
+        }
+        
+        #username:focus {
+            border-color: var(--whatsapp-green);
+        }
+        
+        #login-btn {
+            background-color: var(--whatsapp-green);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 12px 25px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            width: 100%;
+        }
+        
+        #login-btn:hover {
+            background-color: var(--whatsapp-green-dark);
+        }
+        
+        #login-error {
+            color: #ff4444;
+            margin-top: 10px;
+            font-size: 14px;
+            display: none;
+        }
+        
+        #notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            border-radius: 4px;
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 1000;
+        }
+        
+        .notification-show {
+            opacity: 1 !important;
+        }
+        
+        .notification-success {
+            background-color: var(--whatsapp-green);
+        }
+        
+        .notification-error {
+            background-color: #ff4444;
+        }
+        
+        /* Voice Note Styles */
+        .voice-note-container {
+            display: flex;
+            align-items: center;
+            background-color: var(--whatsapp-vn-bg);
+            border-radius: 20px;
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .voice-note-container:hover {
+            background-color: var(--whatsapp-vn-active);
+        }
+        
+        .voice-note-play-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: var(--whatsapp-green);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+        
+        .voice-note-waveform {
+            flex-grow: 1;
+            height: 30px;
+            background-color: #e0e0e0;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .voice-note-progress {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 0%;
+            background-color: var(--whatsapp-green);
+            transition: width 0.1s linear;
+        }
+        
+        .voice-note-wave {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="30" viewBox="0 0 100 30"><path d="M0 15 Q5 5 10 15 T20 15 T30 15 T40 15 T50 15 T60 15 T70 15 T80 15 T90 15 T100 15" stroke="%23999999" fill="none" stroke-width="2"/></svg>');
+            background-repeat: repeat-x;
+            background-size: 100px 30px;
+            opacity: 0.7;
+        }
+        
+        .voice-note-duration {
+            margin-left: 12px;
+            font-size: 13px;
+            color: var(--whatsapp-dark-gray);
+            white-space: nowrap;
+        }
+        
+        .voice-note-recording {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            background-color: var(--whatsapp-vn-bg);
+            border-radius: 20px;
+            margin-right: 10px;
+        }
+        
+        .voice-note-recording-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #ff4444;
+            margin-right: 10px;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+        
+        .voice-note-recording-time {
+            font-size: 14px;
+            color: var(--whatsapp-dark-gray);
+        }
+        
+        .voice-note-cancel-btn {
+            margin-left: 10px;
+            color: #ff4444;
+            cursor: pointer;
+        }
+        
+        .voice-note-send-btn {
+            background-color: var(--whatsapp-green);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        
+        .voice-note-input-container {
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+        
+        .voice-note-mic-btn {
+            background-color: var(--whatsapp-green);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin-right: 10px;
+            transition: background-color 0.2s;
+        }
+        
+        .voice-note-mic-btn:hover {
+            background-color: var(--whatsapp-green-dark);
+        }
+        
+        .voice-note-mic-btn.recording {
+            background-color: #ff4444;
+            animation: pulse 1.5s infinite;
+        }
+        
+        /* Dark mode styles */
+        body.dark-mode {
+            background-color: #0a0a0a;
+            color: #e0e0e0;
+        }
+        
+        body.dark-mode #login-container {
+            background-color: #1e1e1e;
+            border-color: #333;
+        }
+        
+        body.dark-mode #chat-container {
+            background-color: #0d1418;
+            background-image: none;
+        }
+        
+        body.dark-mode .chat-header {
+            background-color: #1f2c33;
+        }
+        
+        body.dark-mode .other-message {
+            background-color: #2a3942;
+            color: #e0e0e0;
+        }
+        
+        body.dark-mode .my-message {
+            background-color: #005c4b;
+            color: #e0e0e0;
+        }
+        
+        body.dark-mode .chat-footer {
+            background-color: #1f2c33;
+            border-color: #2a3942;
+        }
+        
+        body.dark-mode #message-input {
+            background-color: #2a3942;
+            color: #e0e0e0;
+        }
+        
+        body.dark-mode .message-info {
+            color: #a3a3a3;
+        }
+        
+        body.dark-mode .message-sender {
+            color: #25d366;
+        }
+        
+        body.dark-mode .expiring-soon {
+            background-color: #3a2e0a;
+        }
+        
+        body.dark-mode .voice-note-container {
+            background-color: #2a3942;
+        }
+        
+        body.dark-mode .voice-note-container:hover {
+            background-color: #33424b;
+        }
+        
+        body.dark-mode .voice-note-waveform {
+            background-color: #1f2c33;
+        }
+        
+        body.dark-mode .voice-note-duration {
+            color: #e0e0e0;
+        }
+        
+        body.dark-mode .voice-note-recording {
+            background-color: #2a3942;
+        }
+        
+        body.dark-mode .voice-note-recording-time {
+            color: #e0e0e0;
+        }
+        
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.05);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0,0,0,0.2);
+            border-radius: 3px;
+        }
+        
+        body.dark-mode ::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            #app-container {
+                height: 100vh;
+            }
+            
+            .chat-header {
+                padding: 12px 15px;
+            }
+            
+            #chat-messages {
+                padding: 15px 10px;
+            }
+            
+            .message {
+                max-width: 80%;
+            }
+            
+            .chat-footer {
+                padding: 8px 10px;
+            }
+            
+            #message-input {
+                padding: 10px 12px;
+            }
+            
+            .animated-title span {
+                font-size: 16px;
+            }
+            
+            .voice-note-container {
+                padding: 8px 12px;
+            }
+            
+            .voice-note-duration {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="app-container">
+        <div id="login-container">
+            <h2>Join Group Chat</h2>
+            <input type="text" id="username" placeholder="Enter your name" required maxlength="20">
+            <button id="login-btn">Join Chat <i class="fas fa-sign-in-alt"></i></button>
+            <div id="login-error"></div>
+        </div>
+
+        <div id="chat-container">
+            <div class="chat-header">
+                <div class="chat-header-content">
+                    <img src="https://files.catbox.moe/iekuld.png" alt="CatBox Logo" class="chat-header-logo">
+                    <h2 class="animated-title"><span>LIVE CHAT OJIPEDIA</span>
+                    </h2>
+                </div>
+                <div class="chat-header-actions">
+                    <i class="fas fa-ellipsis-v"></i>
+                </div>
+            </div>
+            
+            <div id="chat-messages"></div>
+            <div id="typing-indicator" class="typing-indicator"></div>
+            
+            <div class="chat-footer">
+                <div id="voice-note-input-container" class="voice-note-input-container" style="display: none;">
+                    <button id="voice-note-mic-btn" class="voice-note-mic-btn">
+                        <i class="fas fa-microphone"></i>
+                    </button>
+                    <div id="voice-note-recording" class="voice-note-recording">
+                        <div class="voice-note-recording-indicator"></div>
+                        <div id="voice-note-recording-time" class="voice-note-recording-time">0:00</div>
+                        <div id="voice-note-cancel-btn" class="voice-note-cancel-btn">
+                            <i class="fas fa-times"></i>
+                        </div>
+                    </div>
+                    <button id="voice-note-send-btn" class="voice-note-send-btn" disabled>
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+                <input type="text" id="message-input" placeholder="Type a message" maxlength="500">
+                <button type="button" id="send-btn"><i class="fas fa-paper-plane"></i></button>
+                <button type="button" id="voice-note-toggle-btn" class="voice-note-mic-btn">
+                    <i class="fas fa-microphone"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="notification"></div>
+
+    <script>
+        // Initialize Firebase with your config
+        const firebaseConfig = {
+            apiKey: "AIzaSyCNuIt-TivFbf62cTrBgXqfPsW2SJQq5Lk",
+            authDomain: "live-chat-ojipedia.firebaseapp.com",
+            databaseURL: "https://live-chat-ojipedia-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "live-chat-ojipedia",
+            storageBucket: "live-chat-ojipedia.firebasestorage.app",
+            messagingSenderId: "757508069111",
+            appId: "1:757508069111:web:f6210f5351f84f3d1e25f2",
+            measurementId: "G-WBZ77YVVWQ"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // DOM elements
+        const loginContainer = document.getElementById('login-container');
+        const chatContainer = document.getElementById('chat-container');
+        const usernameInput = document.getElementById('username');
+        const loginBtn = document.getElementById('login-btn');
+        const loginError = document.getElementById('login-error');
+        const chatMessages = document.getElementById('chat-messages');
+        const messageInput = document.getElementById('message-input');
+        const sendBtn = document.getElementById('send-btn');
+        const typingIndicator = document.getElementById('typing-indicator');
+        const notification = document.getElementById('notification');
+        const voiceNoteToggleBtn = document.getElementById('voice-note-toggle-btn');
+        const voiceNoteInputContainer = document.getElementById('voice-note-input-container');
+        const voiceNoteMicBtn = document.getElementById('voice-note-mic-btn');
+        const voiceNoteRecording = document.getElementById('voice-note-recording');
+        const voiceNoteRecordingTime = document.getElementById('voice-note-recording-time');
+        const voiceNoteCancelBtn = document.getElementById('voice-note-cancel-btn');
+        const voiceNoteSendBtn = document.getElementById('voice-note-send-btn');
+
+        // Constants
+        const MESSAGE_EXPIRY_TIME = 5 * 60 * 1000; // 10 minutes in milliseconds
+        const EXPIRY_WARNING_TIME = 1 * 60 * 1000; // 1 minute before expiry to show warning
+        const MAX_VOICE_NOTE_DURATION = 2 * 60 * 1000; // 2 minutes max recording time
+
+        // List of blocked words in Bahasa Indonesia (up to 100 words)
+        const BLOCKED_WORDS = [
+            'anjing', 'jing', 'anj', 'babi', 'bangsat', 'sat', 'bajingan', 'kontol', 'kon', 'tol', 'toll', 'memek', 'mek', 'mekk', 'pepek', 'pek', 'pekk', 'jembut', 
+            'ngentot', 'tot', 'tod', 'ngen', 'ngewe', 'ewe', 'pepek', 'pantek', 'puki', 'pukimak', 'bego', 
+            'goblok', 'idiot', 'tolol', 'bangsat', 'kampret', 'keparat', 'jancuk', 
+            'jancok', 'asu', 'su', 'bajing', 'cibai', 'pantat', 'titit', 'lonte', 
+            'perek', 'bencong', 'banci', 'fuck', 'shit', 'asshole', 'bitch', 
+            'dick', 'pussy', 'bastard', 'motherfucker', 'dickhead', 'cunt', 
+            'fucker', 'shithead', 'ass', 'whore', 'slut', 'nigga', 'nigger', 
+            'retard', 'sucker', 'douche', 'douchebag', 'penis', 'vagina', 
+            'breasts', 'boobs', 'dildo', 'condom', 'sex', 'fuckyou', 'fuckoff', 
+            'fuckup', 'fuckface', 'piss', 'pissed', 'pissedoff', 'damn', 'godamn', 
+            'hell', 'screw', 'screwyou', 'scrotum', 'testicle', 'twat', 'wanker', 
+            'whore', 'wank', 'wanker', 'vagina', 'vulva', 'xxx', 'porn', 'porno', 
+            'pornography', 'hentai', 'bokep', 'sange', 'colmek', 'masturbasi', 
+            'sperma', 'vagina', 'klitoris', 'orgasme', 'erotis', 'mesum', 'telanjang'
+        ];
+
+        let username = '';
+        let myUserId = '';
+        let isTyping = false;
+        let lastTypingTime = 0;
+        let typingTimeout;
+        let expiryTimers = {}; // To store all the expiry timers
+        
+        // Voice note variables
+        let mediaRecorder;
+        let audioChunks = [];
+        let recordingStartTime;
+        let recordingTimer;
+        let isRecording = false;
+        let audioContext;
+        let analyser;
+        let microphone;
+        let dataArray;
+        let canvasContext;
+        let animationId;
+
+        // Join chat
+        loginBtn.addEventListener('click', joinChat);
+        usernameInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                joinChat();
+            }
+        });
+
+        // Send message
+        sendBtn.addEventListener('click', sendMessage);
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // Typing indicator
+        messageInput.addEventListener('input', () => {
+            updateTyping();
+        });
+
+        // Voice note toggle
+        voiceNoteToggleBtn.addEventListener('click', toggleVoiceNoteInput);
+        voiceNoteMicBtn.addEventListener('click', startRecording);
+        voiceNoteCancelBtn.addEventListener('click', cancelRecording);
+        voiceNoteSendBtn.addEventListener('click', sendVoiceNote);
+
+        function toggleVoiceNoteInput() {
+            if (voiceNoteInputContainer.style.display === 'none' || !voiceNoteInputContainer.style.display) {
+                // Show voice note input
+                voiceNoteInputContainer.style.display = 'flex';
+                messageInput.style.display = 'none';
+                sendBtn.style.display = 'none';
+                voiceNoteToggleBtn.innerHTML = '<i class="fas fa-keyboard"></i>';
+            } else {
+                // Show text input
+                voiceNoteInputContainer.style.display = 'none';
+                messageInput.style.display = 'block';
+                sendBtn.style.display = 'flex';
+                voiceNoteToggleBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+            }
+        }
+
+        async function startRecording() {
+            try {
+                // Request microphone permission
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                
+                // Initialize audio context and analyser for visualization
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                analyser = audioContext.createAnalyser();
+                analyser.fftSize = 64;
+                
+                const source = audioContext.createMediaStreamSource(stream);
+                source.connect(analyser);
+                
+                // Initialize MediaRecorder
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+                
+                mediaRecorder.ondataavailable = (event) => {
+                    if (event.data.size > 0) {
+                        audioChunks.push(event.data);
+                    }
+                };
+                
+                mediaRecorder.onstop = () => {
+                    // Stop all tracks in the stream
+                    stream.getTracks().forEach(track => track.stop());
+                    
+                    // Stop visualization
+                    if (animationId) {
+                        cancelAnimationFrame(animationId);
+                    }
+                    
+                    // Update UI
+                    voiceNoteMicBtn.classList.remove('recording');
+                    voiceNoteSendBtn.disabled = audioChunks.length === 0;
+                };
+                
+                // Start recording
+                mediaRecorder.start();
+                isRecording = true;
+                voiceNoteMicBtn.classList.add('recording');
+                voiceNoteSendBtn.disabled = true;
+                
+                // Start timer
+                recordingStartTime = Date.now();
+                updateRecordingTimer();
+                
+                // Start visualization
+                visualizeAudio();
+                
+            } catch (error) {
+                console.error('Error accessing microphone:', error);
+                showNotification('Microphone access denied', 'error');
+            }
+        }
+
+        function visualizeAudio() {
+            const canvas = document.createElement('canvas');
+            canvas.width = voiceNoteRecording.offsetWidth - 100;
+            canvas.height = 30;
+            canvas.style.position = 'absolute';
+            canvas.style.left = '0';
+            canvas.style.top = '0';
+            voiceNoteRecording.appendChild(canvas);
+            canvasContext = canvas.getContext('2d');
+            
+            dataArray = new Uint8Array(analyser.frequencyBinCount);
+            
+            function draw() {
+                animationId = requestAnimationFrame(draw);
+                analyser.getByteFrequencyData(dataArray);
+                
+                canvasContext.clearRect(0, 0, canvas.width, canvas.height);
+                
+                const barWidth = (canvas.width / dataArray.length) * 2.5;
+                let x = 0;
+                
+                for (let i = 0; i < dataArray.length; i++) {
+                    const barHeight = dataArray[i] / 2;
+                    
+                    canvasContext.fillStyle = `rgb(${barHeight + 100}, 50, 50)`;
+                    canvasContext.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
+                    
+                    x += barWidth + 1;
+                }
+            }
+            
+            draw();
+        }
+
+        function updateRecordingTimer() {
+            if (!isRecording) return;
+            
+            const elapsedTime = Date.now() - recordingStartTime;
+            
+            // Format time as M:SS
+            const minutes = Math.floor(elapsedTime / 60000);
+            const seconds = Math.floor((elapsedTime % 60000) / 1000);
+            voiceNoteRecordingTime.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+            
+            // Stop recording if max duration reached
+            if (elapsedTime >= MAX_VOICE_NOTE_DURATION) {
+                stopRecording();
+                return;
+            }
+            
+            recordingTimer = setTimeout(updateRecordingTimer, 1000);
+        }
+
+        function stopRecording() {
+            if (mediaRecorder && isRecording) {
+                mediaRecorder.stop();
+                isRecording = false;
+                clearTimeout(recordingTimer);
+            }
+        }
+
+        function cancelRecording() {
+            stopRecording();
+            audioChunks = [];
+            voiceNoteSendBtn.disabled = true;
+            
+            // Remove visualization canvas if it exists
+            const canvas = voiceNoteRecording.querySelector('canvas');
+            if (canvas) {
+                canvas.remove();
+            }
+        }
+
+        function sendVoiceNote() {
+            if (audioChunks.length === 0) {
+                showNotification('No audio recorded', 'error');
+                return;
+            }
+            
+            const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+            const audioUrl = URL.createObjectURL(audioBlob);
+            
+            // Calculate duration in seconds
+            const duration = Math.floor((Date.now() - recordingStartTime) / 1000);
+            
+            const timestamp = firebase.database.ServerValue.TIMESTAMP;
+            const expiryTime = Date.now() + MESSAGE_EXPIRY_TIME;
+            
+            // Push voice note to database
+            const newMessageRef = database.ref('messages').push({
+                userId: myUserId,
+                username: username,
+                audioUrl: audioUrl,
+                duration: duration,
+                timestamp: timestamp,
+                expiryTime: expiryTime,
+                isVoiceNote: true
+            });
+            
+            // Display my voice note locally
+            displayVoiceNote({
+                userId: myUserId,
+                username: username,
+                audioUrl: audioUrl,
+                duration: duration,
+                timestamp: Date.now(),
+                expiryTime: expiryTime,
+                id: newMessageRef.key
+            }, true);
+            
+            // Reset recording UI
+            audioChunks = [];
+            voiceNoteSendBtn.disabled = true;
+            
+            // Remove visualization canvas if it exists
+            const canvas = voiceNoteRecording.querySelector('canvas');
+            if (canvas) {
+                canvas.remove();
+            }
+            
+            // Show text input again
+            toggleVoiceNoteInput();
+        }
+
+        function joinChat() {
+            username = usernameInput.value.trim();
+            
+            if (!username) {
+                showError('Please enter a username');
+                return;
+            }
+            
+            if (username.length > 20) {
+                showError('Username must be 20 characters or less');
+                return;
+            }
+            
+            // Check if username is already taken
+            database.ref('users').once('value').then(snapshot => {
+                let usernameTaken = false;
+                snapshot.forEach(userSnapshot => {
+                    if (userSnapshot.val().name.toLowerCase() === username.toLowerCase()) {
+                        usernameTaken = true;
+                    }
+                });
+                
+                if (usernameTaken) {
+                    showError('Username is already taken');
+                } else {
+                    proceedWithLogin();
+                }
+            });
+        }
+        
+        function proceedWithLogin() {
+            myUserId = generateUserId();
+            
+            // Add user to online users list
+            const userRef = database.ref('users/' + myUserId);
+            userRef.set({
+                name: username,
+                timestamp: firebase.database.ServerValue.TIMESTAMP,
+                typing: false
+            });
+            
+            // Update user's presence periodically
+            const presenceRef = database.ref('.info/connected');
+            presenceRef.on('value', (snapshot) => {
+                if (snapshot.val()) {
+                    // User is connected
+                    userRef.onDisconnect().remove();
+                    
+                    // Update timestamp every 30 seconds to show user is still active
+                    setInterval(() => {
+                        userRef.update({
+                            timestamp: firebase.database.ServerValue.TIMESTAMP
+                        });
+                    }, 30000);
+                }
+            });
+            
+            // Remove user when they leave
+            window.addEventListener('beforeunload', () => {
+                userRef.remove();
+                
+                // Clear all expiry timers when leaving
+                for (const timerId in expiryTimers) {
+                    clearTimeout(expiryTimers[timerId]);
+                }
+                
+                // Stop recording if active
+                if (isRecording) {
+                    cancelRecording();
+                }
+            });
+            
+            loginContainer.style.display = 'none';
+            chatContainer.style.display = 'flex';
+            messageInput.focus();
+            
+            // Load previous messages
+            loadMessages();
+            
+            // Listen for new messages
+            listenForMessages();
+            
+            // Listen for typing indicators
+            listenForTyping();
+            
+            // Show welcome notification
+            showNotification(`Welcome to live chat, ${username}!`, 'success');
+        }
+
+        function sendMessage() {
+            const message = messageInput.value.trim();
+            if (message) {
+                // Check for blocked words
+                const lowerMessage = message.toLowerCase();
+                const containsBlockedWord = BLOCKED_WORDS.some(word => lowerMessage.includes(word));
+                
+                if (containsBlockedWord) {
+                    showNotification('Upps! chat kamu menganduk kata tidak pantas', 'error');
+                    messageInput.value = '';
+                    return;
+                }
+                
+                const timestamp = firebase.database.ServerValue.TIMESTAMP;
+                const expiryTime = Date.now() + MESSAGE_EXPIRY_TIME;
+                
+                // Push message to database with expiry time
+                const newMessageRef = database.ref('messages').push({
+                    userId: myUserId,
+                    username: username,
+                    text: message,
+                    timestamp: timestamp,
+                    expiryTime: expiryTime
+                });
+                
+                // Display my message locally without username
+                displayMessage({
+                    userId: myUserId,
+                    username: username,
+                    text: message,
+                    timestamp: Date.now(),
+                    expiryTime: expiryTime,
+                    id: newMessageRef.key
+                }, true);
+                
+                messageInput.value = '';
+                
+                // Update typing status
+                setTyping(false);
+            }
+        }
+
+        function loadMessages() {
+            database.ref('messages').orderByChild('timestamp').limitToLast(100).once('value', (snapshot) => {
+                const messages = [];
+                snapshot.forEach((childSnapshot) => {
+                    const message = childSnapshot.val();
+                    message.id = childSnapshot.key;
+                    messages.push(message);
+                });
+                
+                // Filter out expired messages
+                const currentTime = Date.now();
+                const validMessages = messages.filter(message => {
+                    return message.expiryTime > currentTime;
+                });
+                
+                // Remove expired messages from database
+                messages.forEach(message => {
+                    if (message.expiryTime <= currentTime) {
+                        database.ref('messages/' + message.id).remove();
+                    }
+                });
+                
+                // Display valid messages
+                validMessages.forEach(message => {
+                    if (message.isVoiceNote) {
+                        displayVoiceNote(message, message.userId === myUserId);
+                    } else {
+                        displayMessage(message, message.userId === myUserId);
+                    }
+                });
+                
+                // Scroll to bottom
+                setTimeout(() => {
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                }, 100);
+            });
+        }
+
+        function listenForMessages() {
+            database.ref('messages').orderByChild('timestamp').limitToLast(1).on('child_added', (snapshot) => {
+                const message = snapshot.val();
+                message.id = snapshot.key;
+                
+                // Don't display my own messages here (they're already displayed when sent)
+                if (message.userId !== myUserId) {
+                    // Check if message is already expired
+                    if (message.expiryTime > Date.now()) {
+                        if (message.isVoiceNote) {
+                            displayVoiceNote(message, false);
+                        } else {
+                            displayMessage(message, false);
+                        }
+                        
+                        // Scroll to bottom
+                        chatMessages.scrollTop = chatMessages.scrollHeight;
+                        
+                        // Play notification sound
+                        playNotificationSound();
+                        
+                        // Show desktop notification if tab is not active
+                        if (document.hidden) {
+                            if (message.isVoiceNote) {
+                                showDesktopNotification(`${message.username} sent a voice note`, 'Click to listen');
+                            } else {
+                                showDesktopNotification(`${message.username} says:`, message.text);
+                            }
+                        }
+                    } else {
+                        // Remove expired message immediately
+                        database.ref('messages/' + message.id).remove();
+                    }
+                }
+            });
+        }
+        
+        function displayVoiceNote(message, isMyMessage) {
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message');
+            messageElement.id = 'message-' + message.id;
+            
+            if (!isMyMessage) {
+                messageElement.classList.add('other-message');
+                
+                const senderElement = document.createElement('div');
+                senderElement.classList.add('message-sender');
+                senderElement.textContent = message.username;
+                messageElement.appendChild(senderElement);
+            } else {
+                messageElement.classList.add('my-message');
+            }
+            
+            // Create voice note container
+            const voiceNoteContainer = document.createElement('div');
+            voiceNoteContainer.classList.add('voice-note-container');
+            
+            // Create play button
+            const playButton = document.createElement('div');
+            playButton.classList.add('voice-note-play-btn');
+            playButton.innerHTML = '<i class="fas fa-play"></i>';
+            
+            // Create waveform container
+            const waveformContainer = document.createElement('div');
+            waveformContainer.classList.add('voice-note-waveform');
+            
+            // Create progress bar
+            const progressBar = document.createElement('div');
+            progressBar.classList.add('voice-note-progress');
+            
+            // Create waveform visualization (static for demo)
+            const waveform = document.createElement('div');
+            waveform.classList.add('voice-note-wave');
+            
+            // Create duration display
+            const durationDisplay = document.createElement('div');
+            durationDisplay.classList.add('voice-note-duration');
+            const minutes = Math.floor(message.duration / 60);
+            const seconds = Math.floor(message.duration % 60);
+            durationDisplay.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+            
+            // Assemble the voice note
+            waveformContainer.appendChild(progressBar);
+            waveformContainer.appendChild(waveform);
+            voiceNoteContainer.appendChild(playButton);
+            voiceNoteContainer.appendChild(waveformContainer);
+            voiceNoteContainer.appendChild(durationDisplay);
+            
+            // Add audio element (hidden)
+            const audioElement = document.createElement('audio');
+            audioElement.src = message.audioUrl;
+            audioElement.preload = 'metadata';
+            voiceNoteContainer.appendChild(audioElement);
+            
+            // Add click event to play/pause audio
+            let isPlaying = false;
+            let audioProgressInterval;
+            
+            voiceNoteContainer.addEventListener('click', () => {
+                if (isPlaying) {
+                    audioElement.pause();
+                    playButton.innerHTML = '<i class="fas fa-play"></i>';
+                    clearInterval(audioProgressInterval);
+                    isPlaying = false;
+                } else {
+                    audioElement.play()
+                        .then(() => {
+                            playButton.innerHTML = '<i class="fas fa-pause"></i>';
+                            isPlaying = true;
+                            
+                            // Update progress bar while playing
+                            audioProgressInterval = setInterval(() => {
+                                const progress = (audioElement.currentTime / audioElement.duration) * 100;
+                                progressBar.style.width = `${progress}%`;
+                                
+                                // Update duration display with remaining time
+                                const remaining = Math.floor(audioElement.duration - audioElement.currentTime);
+                                const remMinutes = Math.floor(remaining / 60);
+                                const remSeconds = Math.floor(remaining % 60);
+                                durationDisplay.textContent = `-${remMinutes}:${remSeconds < 10 ? '0' : ''}${remSeconds}`;
+                                
+                                // Check if audio finished playing
+                                if (audioElement.ended) {
+                                    clearInterval(audioProgressInterval);
+                                    playButton.innerHTML = '<i class="fas fa-play"></i>';
+                                    progressBar.style.width = '0%';
+                                    isPlaying = false;
+                                    
+                                    // Reset duration display
+                                    const minutes = Math.floor(message.duration / 60);
+                                    const seconds = Math.floor(message.duration % 60);
+                                    durationDisplay.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+                                }
+                            }, 100);
+                        })
+                        .catch(error => {
+                            console.error('Error playing audio:', error);
+                            showNotification('Error playing voice note', 'error');
+                        });
+                }
+            });
+            
+            // Handle when audio ends naturally
+            audioElement.addEventListener('ended', () => {
+                clearInterval(audioProgressInterval);
+                playButton.innerHTML = '<i class="fas fa-play"></i>';
+                progressBar.style.width = '0%';
+                isPlaying = false;
+                
+                // Reset duration display
+                const minutes = Math.floor(message.duration / 60);
+                const seconds = Math.floor(message.duration % 60);
+                durationDisplay.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+            });
+            
+            // Add message to DOM
+            messageElement.appendChild(voiceNoteContainer);
+            
+            // Add message info (timestamp)
+            const messageInfo = document.createElement('div');
+            messageInfo.classList.add('message-info');
+            
+            const timestamp = document.createElement('span');
+            timestamp.classList.add('message-time');
+            timestamp.textContent = formatTimestamp(message.timestamp);
+            messageInfo.appendChild(timestamp);
+            
+            // Add expiry timer display
+            const expiryTimer = document.createElement('div');
+            expiryTimer.classList.add('expiry-timer');
+            updateExpiryTimer(expiryTimer, message.expiryTime);
+            
+            messageElement.appendChild(messageInfo);
+            messageElement.appendChild(expiryTimer);
+            
+            chatMessages.appendChild(messageElement);
+            
+            // Set up the expiry timer for this message
+            setupMessageExpiry(message.id, message.expiryTime);
+            
+            // Check if message is expiring soon to highlight it
+            checkExpiringSoon(messageElement, message.expiryTime);
+        }
+
+        function displayMessage(message, isMyMessage) {
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message');
+            messageElement.id = 'message-' + message.id;
+            
+            if (!isMyMessage) {
+                messageElement.classList.add('other-message');
+                
+                const senderElement = document.createElement('div');
+                senderElement.classList.add('message-sender');
+                senderElement.textContent = message.username;
+                messageElement.appendChild(senderElement);
+            } else {
+                messageElement.classList.add('my-message');
+            }
+            
+            const messageText = document.createElement('div');
+            messageText.textContent = message.text;
+            messageElement.appendChild(messageText);
+            
+            const messageInfo = document.createElement('div');
+            messageInfo.classList.add('message-info');
+            
+            const timestamp = document.createElement('span');
+            timestamp.classList.add('message-time');
+            timestamp.textContent = formatTimestamp(message.timestamp);
+            messageInfo.appendChild(timestamp);
+            
+            // Add expiry timer display
+            const expiryTimer = document.createElement('div');
+            expiryTimer.classList.add('expiry-timer');
+            updateExpiryTimer(expiryTimer, message.expiryTime);
+            
+            messageElement.appendChild(messageInfo);
+            messageElement.appendChild(expiryTimer);
+            
+            chatMessages.appendChild(messageElement);
+            
+            // Set up the expiry timer for this message
+            setupMessageExpiry(message.id, message.expiryTime);
+            
+            // Check if message is expiring soon to highlight it
+            checkExpiringSoon(messageElement, message.expiryTime);
+        }
+        
+        function updateExpiryTimer(element, expiryTime) {
+            const remainingTime = expiryTime - Date.now();
+            if (remainingTime <= 0) {
+                element.textContent = "Expired";
+                return;
+            }
+            
+            const minutes = Math.floor(remainingTime / (60 * 1000));
+            const seconds = Math.floor((remainingTime % (60 * 1000)) / 1000);
+            
+            if (minutes > 0) {
+                element.textContent = ` ${minutes}m ${seconds}s`;
+            } else {
+                element.textContent = ` ${seconds}s`;
+            }
+            
+            // Update every second
+            setTimeout(() => {
+                updateExpiryTimer(element, expiryTime);
+            }, 1000);
+        }
+        
+        function setupMessageExpiry(messageId, expiryTime) {
+            const remainingTime = expiryTime - Date.now();
+            
+            if (remainingTime <= 0) {
+                // Message is already expired, remove it
+                removeMessage(messageId);
+                return;
+            }
+            
+            // Set timer to remove the message when it expires
+            expiryTimers[messageId] = setTimeout(() => {
+                removeMessage(messageId);
+                
+                // Also remove from Firebase
+                database.ref('messages/' + messageId).remove();
+            }, remainingTime);
+        }
+        
+        function removeMessage(messageId) {
+            const messageElement = document.getElementById('message-' + messageId);
+            if (messageElement) {
+                // Stop any playing audio in this message
+                const audioElement = messageElement.querySelector('audio');
+                if (audioElement) {
+                    audioElement.pause();
+                }
+                
+                // Fade out animation before removing
+                messageElement.style.opacity = '0';
+                messageElement.style.transform = 'translateX(-20px)';
+                messageElement.style.transition = 'all 0.3s ease';
+                
+                setTimeout(() => {
+                    messageElement.remove();
+                }, 300);
+            }
+            
+            // Clear the timer
+            if (expiryTimers[messageId]) {
+                clearTimeout(expiryTimers[messageId]);
+                delete expiryTimers[messageId];
+            }
+        }
+        
+        function checkExpiringSoon(messageElement, expiryTime) {
+            const remainingTime = expiryTime - Date.now();
+            
+            if (remainingTime <= EXPIRY_WARNING_TIME) {
+                messageElement.classList.add('expiring-soon');
+            } else {
+                // Set a timeout to add the warning class when the time comes
+                setTimeout(() => {
+                    messageElement.classList.add('expiring-soon');
+                }, remainingTime - EXPIRY_WARNING_TIME);
+            }
+        }
+        
+        function formatTimestamp(timestamp) {
+            const date = new Date(timestamp);
+            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function generateUserId() {
+            return 'user-' + Math.random().toString(36).substr(2, 9);
+        }
+        
+        function showError(message) {
+            loginError.textContent = message;
+            loginError.style.display = 'block';
+            setTimeout(() => {
+                loginError.style.display = 'none';
+            }, 3000);
+        }
+        
+        function showNotification(message, type) {
+            notification.textContent = message;
+            notification.className = '';
+            notification.classList.add(`notification-${type}`);
+            notification.classList.add('notification-show');
+            
+            setTimeout(() => {
+                notification.classList.remove('notification-show');
+            }, 3000);
+        }
+        
+        function playNotificationSound() {
+            const audio = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-software-interface-start-2574.mp3');
+            audio.volume = 0.3;
+            audio.play().catch(e => console.log('Audio play failed:', e));
+        }
+        
+        function showDesktopNotification(title, body) {
+            if (!("Notification" in window)) {
+                return;
+            }
+            
+            if (Notification.permission === "granted") {
+                new Notification(title, { body });
+            } else if (Notification.permission !== "denied") {
+                Notification.requestPermission().then(permission => {
+                    if (permission === "granted") {
+                        new Notification(title, { body });
+                    }
+                });
+            }
+        }
+        
+        // Typing indicator functions
+        function updateTyping() {
+            const currentTime = Date.now();
+            
+            if (!isTyping) {
+                isTyping = true;
+                setTyping(true);
+            }
+            
+            lastTypingTime = currentTime;
+            
+            if (typingTimeout) {
+                clearTimeout(typingTimeout);
+            }
+            
+            typingTimeout = setTimeout(() => {
+                const timeSinceLastTyping = currentTime - lastTypingTime;
+                if (timeSinceLastTyping >= 2000) {
+                    isTyping = false;
+                    setTyping(false);
+                }
+            }, 2000);
+        }
+        
+        function setTyping(typing) {
+            database.ref('users/' + myUserId + '/typing').set(typing);
+        }
+        
+        function listenForTyping() {
+            database.ref('users').on('child_changed', (snapshot) => {
+                const user = snapshot.val();
+                if (user.userId !== myUserId && user.typing) {
+                    typingIndicator.textContent = `${user.name} is typing...`;
+                    typingIndicator.style.display = 'block';
+                } else {
+                    typingIndicator.style.display = 'none';
+                }
+            });
+        }
+        
+        // Request notification permission when joining chat
+        if ("Notification" in window) {
+            Notification.requestPermission();
+        }
+    </script>
+</body>
+</html>
