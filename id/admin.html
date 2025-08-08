@@ -9,6 +9,7 @@
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-messaging-compat.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
     
@@ -214,6 +215,34 @@
       box-shadow: 0 4px 6px rgba(79, 70, 229, 0.3);
     }
     
+    /* Notification permission button */
+    .notification-permission-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      padding: 12px 20px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      font-weight: 500;
+      z-index: 1000;
+      transition: all 0.3s ease;
+    }
+    
+    .notification-permission-btn:hover {
+      background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+      box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+    }
+    
+    .notification-permission-btn i {
+      margin-right: 8px;
+    }
+    
     /* Responsive adjustments */
     @media (max-width: 768px) {
       .table-header {
@@ -252,6 +281,13 @@
       .admin-login-card {
         padding: 1.5rem;
         margin: 1rem;
+      }
+      
+      .notification-permission-btn {
+        bottom: 70px;
+        right: 10px;
+        padding: 10px 16px;
+        font-size: 14px;
       }
     }
   </style>
@@ -527,6 +563,11 @@
     </div>
   </div>
 
+  <!-- Notification Permission Button -->
+  <button id="notificationPermissionBtn" class="notification-permission-btn hidden">
+    <i class="fas fa-bell"></i> Aktifkan Notifikasi
+  </button>
+
   <script>
     // Initialize Firebase
     const firebaseConfig = {
@@ -540,8 +581,9 @@
     };
 
     // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
+    const firebaseApp = firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
+    const messaging = firebase.messaging();
 
     // Admin code configuration
     const ADMIN_CODE = "ojixyz$#"; // Change this to your desired admin code
@@ -591,6 +633,125 @@
       document.getElementById('adminLoginScreen').classList.add('hidden');
       document.getElementById('dashboardContent').classList.remove('hidden');
       loadOrders();
+      initializePushNotifications();
+    }
+
+    // Initialize push notifications
+    function initializePushNotifications() {
+      // Check if notifications are supported
+      if (!('Notification' in window)) {
+        console.log('This browser does not support notifications');
+        return;
+      }
+
+      // Check current permission
+      if (Notification.permission === 'granted') {
+        // Permission already granted, request FCM token
+        requestFCMToken();
+      } else if (Notification.permission !== 'denied') {
+        // Show button to request permission
+        const btn = document.getElementById('notificationPermissionBtn');
+        btn.classList.remove('hidden');
+        
+        btn.addEventListener('click', function() {
+          requestNotificationPermission();
+        });
+      }
+    }
+
+    // Request notification permission
+    function requestNotificationPermission() {
+      Notification.requestPermission().then(permission => {
+        const btn = document.getElementById('notificationPermissionBtn');
+        
+        if (permission === 'granted') {
+          console.log('Notification permission granted.');
+          btn.classList.add('hidden');
+          requestFCMToken();
+          
+          // Show success message
+          const notification = document.createElement('div');
+          notification.className = 'notification fixed bottom-4 right-4 bg-green-500 text-white px-4 py-3 rounded-lg shadow-lg flex items-center';
+          notification.innerHTML = `
+            <i class="fas fa-check-circle mr-2"></i>
+            Notifikasi diaktifkan! Anda akan menerima pemberitahuan pesanan baru.
+          `;
+          document.body.appendChild(notification);
+          
+          setTimeout(() => notification.remove(), 3000);
+        } else {
+          console.log('Unable to get permission to notify.');
+          btn.textContent = 'Izin Ditolak. Klik untuk Coba Lagi';
+        }
+      });
+    }
+
+    // Request FCM token
+    function requestFCMToken() {
+      // Get registration token. Initially this makes a network call, once retrieved
+      // subsequent calls to getToken will return from cache.
+      messaging.getToken({ vapidKey: 'BLHjQvJQJ6v9QZJQZJQZJQZJQZJQZJQZJQZJQZJQZJQZJQZJQZJQZJQZJQZJQZJQZJQZJQZJQZJQZJQZJQZJQZJQ' }).then((currentToken) => {
+        if (currentToken) {
+          // Send the token to your server and update the UI if necessary
+          console.log('FCM Token:', currentToken);
+          saveTokenToDatabase(currentToken);
+        } else {
+          // Show permission request UI
+          console.log('No registration token available. Request permission to generate one.');
+          const btn = document.getElementById('notificationPermissionBtn');
+          btn.classList.remove('hidden');
+        }
+      }).catch((err) => {
+        console.log('An error occurred while retrieving token. ', err);
+      });
+    }
+
+    // Save token to database
+    function saveTokenToDatabase(token) {
+      // Here you would typically send the token to your server
+      // For this example, we'll just store it in localStorage
+      localStorage.setItem('fcmToken', token);
+    }
+
+    // Setup foreground message handler
+    messaging.onMessage((payload) => {
+      console.log('Message received. ', payload);
+      
+      // Show a notification
+      const notificationTitle = payload.notification.title || 'Pesanan Baru';
+      const notificationOptions = {
+        body: payload.notification.body || 'Ada pesanan baru yang membutuhkan tindakan Anda',
+        icon: '/favicon.ico',
+        badge: '/favicon.ico'
+      };
+      
+      // Show notification
+      if (Notification.permission === 'granted') {
+        new Notification(notificationTitle, notificationOptions);
+      }
+      
+      // Also show in-app notification
+      const inAppNotification = document.createElement('div');
+      inAppNotification.className = 'notification fixed bottom-4 right-4 bg-blue-500 text-white px-4 py-3 rounded-lg shadow-lg flex items-center';
+      inAppNotification.innerHTML = `
+        <i class="fas fa-shopping-cart mr-2"></i>
+        ${payload.notification.body || 'Pesanan baru diterima!'}
+      `;
+      document.body.appendChild(inAppNotification);
+      
+      setTimeout(() => inAppNotification.remove(), 5000);
+      
+      // Play notification sound
+      playNotificationSound();
+      
+      // Refresh orders to show the new one
+      loadOrders();
+    });
+
+    // Play notification sound
+    function playNotificationSound() {
+      const audio = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-alarm-digital-clock-beep-989.mp3');
+      audio.play().catch(e => console.log('Error playing sound:', e));
     }
 
     // Format number with thousand separator
@@ -1101,7 +1262,7 @@
         .then(() => {
           // Show success notification
           const notification = document.createElement('div');
-          notification.className = 'notification fixed bottom-4 right-4 ${bgColor} text-white px-4 py-3 rounded-lg shadow-lg flex items-center';
+          notification.className = `notification fixed bottom-4 right-4 ${bgColor} text-white px-4 py-3 rounded-lg shadow-lg flex items-center`;
           notification.innerHTML = `
             <i class="fas ${icon} mr-2"></i>
             Status pesanan berhasil diubah menjadi ${statusText}
