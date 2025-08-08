@@ -1,1 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <title>ojipediatopup</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database-compat.js"></script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    .selected-diamond {
+      border: 2px solid #4DA8F7;
+      background-color: rgba(77, 168, 247, 0.1);
+    }
+    .payment-method {
+      transition: all 0.3s ease;
+    }
+    .payment-method:hover {
+      transform: translateY(-2px);
+    }
+    .diamond-option:hover {
+      background-color: rgba(74, 138, 224, 0.2);
+    }
+    .hidden-diamonds {
+      display: none;
+    }
+    .hidden-payments {
+      display: none;
+    }
+    .active {
+      background-color: #4A8AE0;
+      color: white;
+    }
+  </style>
+</head>
+<body class="bg-[#0A1A35] min-h-screen flex flex-col justify-between">
+  <div class="container mx-auto px-4 py-6 max-w-md">
+    <!-- Header Section -->
+    <div class="bg-[#0A1A35] rounded-md p-4 flex flex-col items-center space-y-3 border border-[#4A8AE0] mt-4">
+      <div class="w-full max-w-xs mx-auto">
+        <img alt="PediaPay Top Up Games" class="w-full h-auto rounded-md shadow-lg border-2 border-[#4DA8F7]" src="https://files.catbox.moe/igoekj.jpg"/>
+      </div>
+      <h1 class="text-white font-semibold text-xl mt-2">PediaPay: Mobile Legends</h1>
+      <div class="flex space-x-2 mt-1">
+        <button class="bg-[#0077B6] hover:bg-[#0067A6] text-white text-xs px-3 py-1 rounded-full flex items-center space-x-1 transition" type="button">
+          <i class="fas fa-bolt"></i>
+          <span>Proses Cepat</span>
+        </button>
+        <button class="bg-[#0077B6] hover:bg-[#0067A6] text-white text-xs px-3 py-1 rounded-full flex items-center space-x-1 transition" type="button">
+          <i class="fas fa-headset"></i>
+          <span>Support 24/7</span>
+        </button>
+      </div>
+      <div class="w-full pt-3 mt-2 border-t border-[#4A8AE0]">
+        <div class="flex justify-between text-xs text-[#b0b0b0] px-4">
+          <div class="text-center">
+            <div class="text-white font-semibold">4.9</div>
+            <div class="flex justify-center text-yellow-400">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+            </div>
+            <div>500+ reviews</div>
+          </div>
+          <div class="text-center">
+            <div class="text-white font-semibold">98%</div>
+            <div class="text-green-400">
+              <i class="fas fa-check-circle"></i>
+            </div>
+            <div>Success Rate</div>
+          </div>
+          <div class="text-center">
+            <div class="text-white font-semibold">5m</div>
+            <div class="text-[#9BD0FF]">
+              <i class="fas fa-bolt"></i>
+            </div>
+            <div>Process</div>
+          </div>
+        </div>
+      </div>
+    </div>
 
+    <!-- Cara Melakukan Top Up -->
+    <section class="bg-[#0A1A35] rounded-md p-4 space-y-3 border border-[#4A8AE0] mt-4">
+      <div class="flex items-center space-x-2 text-white font-semibold text-sm">
+        <div class="bg-[#4DA8F7] rounded p-1">
+          <i class="fas fa-info-circle"></i>
+        </div>
+        <h2>Cara Melakukan Top Up</h2>
+      </div>
+      <div class="border border-[#4A8AE0] rounded-md p-3 text-xs text-[#b0b0b0] leading-relaxed">
+        <ol class="list-decimal list-inside space-y-1">
+          <li>Pilih Nominal Diamond yang ingin dibeli</li>
+          <li>Masukkan Data Akun (User ID dan Server ID)</li>
+          <li>Tentukan Jumlah Pembelian</li>
+          <li>Pilih Metode Pembayaran yang tersedia</li>
+          <li>Masukkan Kode Promo (jika ada) untuk mendapatkan diskon</li>
+          <li>Isi Detail Kontak (Email dan WhatsApp)</li>
+          <li>Klik Pesan Sekarang dan lakukan Pembayaran</li>
+          <li>Kami akan proses pesanan anda terlebih dahulu Diamond akan masuk dalam 1-5 menit</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- Pilih Nominal -->
+    <section class="bg-[#0A1A35] rounded-md p-4 space-y-3 border border-[#4A8AE0] mt-4">
+      <div class="flex items-center space-x-2 text-white font-semibold text-sm">
+        <div class="bg-[#4DA8F7] rounded p-1">
+          <i class="fas fa-info-circle"></i>
+        </div>
+        <h2>Pilih Nominal Diamond</h2>
+      </div>
+      
+      <div class="relative">
+        <input type="text" placeholder="Cari nominal..." class="w-full bg-[#12294D] rounded border border-[#4A8AE0] px-3 py-2 text-xs text-[#b0b0b0] focus:outline-none focus:ring-1 focus:ring-[#4DA8F7] pl-8">
+        <i class="fas fa-search absolute left-3 top-2.5 text-[#4DA8F7] text-xs"></i>
+      </div>
+      
+      <div class="grid grid-cols-2 gap-2 text-[10px] text-[#4DA8F7] font-semibold" id="diamondContainer">
+        <!-- Diamond options here (same as before) -->
+        <div class="bg-[#12294D] rounded p-2 diamond-option cursor-pointer hover:bg-[#1a3a6a]" data-diamond="3" data-price="1222">
+          <p>3 Diamonds (3 + 0 Bonus)</p>
+          <p class="mt-1 text-[#b0b0b0] diamond-price">Rp. 1.222</p>
+        </div>
+        <div class="bg-[#12294D] rounded p-2 diamond-option cursor-pointer hover:bg-[#1a3a6a]" data-diamond="5" data-price="1550">
+          <p>5 Diamonds (5 + 0 Bonus)</p>
+          <p class="mt-1 text-[#b0b0b0] diamond-price">Rp. 1.550</p>
+        </div>
+        <div class="bg-[#12294D] rounded p-2 diamond-option cursor-pointer hover:bg-[#1a3a6a]" data-diamond="10" data-price="3096">
+          <p>10 Diamonds (9 + 1 Bonus)</p>
+          <p class="mt-1 text-[#b0b0b0] diamond-price">Rp. 3.096</p>
+        </div>
+        <div class="bg-[#12294D] rounded p-2 diamond-option cursor-pointer hover:bg-[#1a3a6a]" data-diamond="12" data-price="3607">
+          <p>12 Diamonds (11 + 1 Bonus)</p>
+          <p class="mt-1 text-[#b0b0b0] diamond-price">Rp. 3.607</p>
+        </div>
+        <div class="bg-[#12294D] rounded p-2 diamond-option cursor-pointer hover:bg-[#1a3a6a] selected-diamond" data-diamond="12" data-price="3614">
+          <p>17 Diamonds (11 + 1 Bonus)</p>
+          <p class="mt-1 text-[#b0b0b0] diamond-price">Rp. 3.614</p>
+        </div>
+        <div class="bg-[#12294D] rounded p-2 diamond-option cursor-pointer hover:bg-[#1a3a6a]" data-diamond="14" data-price="4185">
+          <p>14 Diamonds (13 + 1 Bonus)</p>
+          <p class="mt-1 text-[#b0b0b0] diamond-price">Rp. 4.185</p>
+        </div>
+        <div class="bg-[#12294D] rounded p-2 diamond-option cursor-pointer hover:bg-[#1a3a6a]" data-diamond="19" data-price="5663">
+          <p>19 Diamonds (17 + 2 Bonus)</p>
+          <p class="mt-1 text-[#b0b0b0] diamond-price">Rp. 5.663</p>
+        </div>
+        <div class="bg-[#12294D] rounded p-2 diamond-option cursor-pointer hover:bg-[#1a3a6a]" data-diamond="19" data-price="5663">
+          <p>29 Diamonds (17 + 2 Bonus)</p>
+          <p class="mt-1 text-[#b0b0b0] diamond-price">Rp. 5.663</p>
+        </div>
+        
+        <!-- Hidden diamond options -->
+        <div class="bg-[#12294D] rounded p-2 diamond-option cursor-pointer hover:bg-[#1a3a6a] hidden-diamonds" data-diamond="28" data-price="8235">
+          <p>38 Diamonds (25 + 3 Bonus)</p>
+          <p class="mt-1 text-[#b0b0b0] diamond-price">Rp. 8.235</p>
+        </div>
+        <div class="bg-[#12294D] rounded p-2 diamond-option cursor-pointer hover:bg-[#1a3a6a] hidden-diamonds" data-diamond="28" data-price="8235">
+          <p>28 Diamonds (25 + 3 Bonus)</p>
+          <p class="mt-1 text-[#b0b0b0] diamond-price">Rp. 8.235</p>
+        </div>
+        <div class="bg-[#12294D] rounded p-2 diamond-option cursor-pointer hover:bg-[#1a3a6a] hidden-diamonds" data-diamond="36" data-price="10467">
+          <p>46 Diamonds (33 + 3 Bonus)</p>
+          <p class="mt-1 text-[#b0b0b0] diamond-price">Rp. 10.467</p>
+        </div>
+        <div class="bg-[#12294D] rounded p-2 diamond-option cursor-pointer hover:bg-[#1a3a6a] hidden-diamonds" data-diamond="44" data-price="12358">
+          <p>44 Diamonds (40 + 4 Bonus)</p>
+          <p class="mt-1 text-[#b0b0b0] diamond-price">Rp. 12.358</p>
+        </div>
+        <div class="bg-[#12294D] rounded p-2 diamond-option cursor-pointer hover:bg-[#1a3a6a] hidden-diamonds" data-diamond="50" data-price="14500">
+          <p>50 Diamonds (45 + 5 Bonus)</p>
+          <p class="mt-1 text-[#b0b0b0] diamond-price">Rp. 14.500</p>
+        </div>
+        <div class="bg-[#12294D] rounded p-2 diamond-option cursor-pointer hover:bg-[#1a3a6a] hidden-diamonds" data-diamond="70" data-price="19800">
+          <p>70 Diamonds (63 + 7 Bonus)</p>
+          <p class="mt-1 text-[#b0b0b0] diamond-price">Rp. 19.800</p>
+        </div>
+        <div class="bg-[#12294D] rounded p-2 diamond-option cursor-pointer hover:bg-[#1a3a6a] hidden-diamonds" data-diamond="100" data-price="27500">
+          <p>100 Diamonds (90 + 10 Bonus)</p>
+          <p class="mt-1 text-[#b0b0b0] diamond-price">Rp. 27.500</p>
+        </div>
+        <div class="bg-[#12294D] rounded p-2 diamond-option cursor-pointer hover:bg-[#1a3a6a] hidden-diamonds" data-diamond="150" data-price="39900">
+          <p>150 Diamonds (135 + 15 Bonus)</p>
+          <p class="mt-1 text-[#b0b0b0] diamond-price">Rp. 39.900</p>
+        </div>
+      </div>
+      <button class="bg-[#0A1A35] border border-[#4A8AE0] rounded-md text-white text-xs py-1 px-3 flex items-center space-x-1 mx-auto mt-3 hover:bg-[#12294D] transition" id="showMoreDiamonds" type="button">
+        <span>Tampilkan Lebih Banyak</span>
+        <i class="fas fa-chevron-down text-[10px]"></i>
+      </button>
+    </section>
+
+    <!-- Data Akun Game -->
+    <section class="bg-[#0A1A35] rounded-md p-4 space-y-3 border border-[#4A8AE0] mt-4">
+      <div class="flex items-center space-x-2 text-white font-semibold text-sm">
+        <div class="bg-[#4DA8F7] rounded p-1">
+          <i class="fas fa-info-circle"></i>
+        </div>
+        <h2>Data Akun Game</h2>
+      </div>
+      <form class="space-y-3 text-xs text-[#b0b0b0]">
+        <div>
+          <label class="block mb-1 font-semibold text-white" for="userId">User ID</label>
+          <div class="relative">
+            <input class="w-full bg-[#12294D] rounded border border-[#4A8AE0] px-3 py-2 text-xs text-[#b0b0b0] focus:outline-none focus:ring-1 focus:ring-[#4DA8F7]" id="userId" placeholder="Masukkan User ID Anda" type="text" required/>
+            <button type="button" class="absolute right-3 top-2 text-[#4DA8F7] hover:text-white">
+              <i class="fas fa-question-circle"></i>
+            </button>
+          </div>
+          <p class="text-[8px] text-[#4DA8F7] mt-1">*User ID dapat ditemukan di profil game Anda</p>
+        </div>
+        <div>
+          <label class="block mb-1 font-semibold text-white" for="serverId">Server/Zone ID</label>
+          <div class="relative">
+            <input class="w-full bg-[#12294D] rounded border border-[#4A8AE0] px-3 py-2 text-xs text-[#b0b0b0] focus:outline-none focus:ring-1 focus:ring-[#4DA8F7]" id="serverId" placeholder="Masukkan Server/Zone ID anda" type="text" required/>
+            <button type="button" class="absolute right-3 top-2 text-[#4DA8F7] hover:text-white">
+              <i class="fas fa-question-circle"></i>
+            </button>
+          </div>
+          <p class="text-[8px] text-[#4DA8F7] mt-1">*Server ID biasanya berupa angka (contoh: 1234)</p>
+        </div>
+        <div>
+          <label class="block mb-1 font-semibold text-white" for="nickname">Nickname (Opsional)</label>
+          <input class="w-full bg-[#12294D] rounded border border-[#4A8AE0] px-3 py-2 text-xs text-[#b0b0b0] focus:outline-none focus:ring-1 focus:ring-[#4DA8F7]" id="nickname" placeholder="Masukkan Nickname Anda" type="text"/>
+        </div>
+      </form>
+    </section>
+
+    <!-- Jumlah Pembelian -->
+    <section class="bg-[#0A1A35] rounded-md p-4 space-y-3 border border-[#4A8AE0] mt-4">
+      <div class="flex items-center space-x-2 text-white font-semibold text-sm">
+        <div class="bg-[#4DA8F7] rounded p-1">
+          <i class="fas fa-info-circle"></i>
+        </div>
+        <h2>Jumlah Pembelian</h2>
+      </div>
+      <div class="flex items-center justify-between bg-[#12294D] rounded border border-[#4A8AE0] px-3 py-2">
+        <button class="text-white bg-[#4DA8F7] rounded-full w-6 h-6 flex items-center justify-center hover:bg-[#3a97e6]" id="decreaseQuantity">
+          <i class="fas fa-minus text-xs"></i>
+        </button>
+        <span class="text-white font-semibold" id="quantity">1</span>
+        <button class="text-white bg-[#4DA8F7] rounded-full w-6 h-6 flex items-center justify-center hover:bg-[#3a97e6]" id="increaseQuantity">
+          <i class="fas fa-plus text-xs"></i>
+        </button>
+      </div>
+      <p class="text-[8px] text-[#4DA8F7]">*Anda bisa membeli lebih dari 1 untuk mendapatkan harga lebih murah</p>
+    </section>
+
+    <!-- Kode Promo -->
+    <section class="bg-[#0A1A35] rounded-md p-4 space-y-3 border border-[#4A8AE0] mt-4">
+      <div class="flex items-center space-x-2 text-white font-semibold text-sm">
+        <div class="bg-[#4DA8F7] rounded p-1">
+          <i class="fas fa-tag"></i>
+        </div>
+        <h2>Kode Promo</h2>
+      </div>
+      <div class="flex space-x-2">
+        <input class="flex-1 bg-[#12294D] rounded border border-[#4A8AE0] px-3 py-2 text-xs text-[#b0b0b0] focus:outline-none focus:ring-1 focus:ring-[#4DA8F7]" id="promoCode" placeholder="Masukkan kode promo" type="text"/>
+        <button class="bg-[#4DA8F7] text-white text-xs px-3 py-2 rounded hover:bg-[#3a97e6] transition" id="applyPromo" type="button">
+          Gunakan
+        </button>
+      </div>
+      <p class="text-[8px] text-[#4DA8F7]">*masukkan kode promo jika punya</p>
+    </section>
+
+    <!-- Metode Pembayaran -->
+    <section class="bg-[#0A1A35] rounded-md p-4 space-y-3 border border-[#4A8AE0] mt-4">
+      <div class="flex items-center space-x-2 text-white font-semibold text-sm">
+        <div class="bg-[#4DA8F7] rounded p-1">
+          <i class="fas fa-credit-card"></i>
+        </div>
+        <h2>Metode Pembayaran</h2>
+      </div>
+      <div class="flex space-x-2 overflow-x-auto pb-2 text-xs font-semibold text-[#4DA8F7]">
+        <button class="bg-[#12294D] rounded px-3 py-1 whitespace-nowrap hover:bg-[#1a3a6a] payment-category active" data-category="all" type="button">
+          Semua
+        </button>
+        <button class="bg-[#12294D] rounded px-3 py-1 whitespace-nowrap hover:bg-[#1a3a6a] payment-category" data-category="ewallet" type="button">
+          E-Wallet
+        </button>
+        <button class="bg-[#12294D] rounded px-3 py-1 whitespace-nowrap hover:bg-[#1a3a6a] payment-category" data-category="bank" type="button">
+          Bank Transfer
+        </button>
+        <button class="bg-[#12294D] rounded px-3 py-1 whitespace-nowrap hover:bg-[#1a3a6a] payment-category" data-category="qris" type="button">
+          QRIS
+        </button>
+        <button class="bg-[#12294D] rounded px-3 py-1 whitespace-nowrap hover:bg-[#1a3a6a] payment-category" data-category="va" type="button">
+          Virtual Account
+        </button>
+        <button class="bg-[#12294D] rounded px-3 py-1 whitespace-nowrap hover:bg-[#1a3a6a] payment-category" data-category="retail" type="button">
+          Alfamart
+        </button>
+      </div>
+      
+      <div id="paymentMethodsContainer">
+        <!-- Payment methods here (same as before) -->
+        <div class="bg-[#12294D] rounded border border-[#4A8AE0] p-3 payment-method cursor-pointer hover:border-[#4DA8F7]" data-method="DANA" data-fee="1500" data-category="ewallet">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+              <img alt="DANA e-wallet logo in purple and white colors" class="w-16 h-5 object-contain" height="20" src="https://files.catbox.moe/umo9ub.jpg" width="64"/>
+              <span>DANA</span>
+            </div>
+            <i class="far fa-circle text-[#4DA8F7]"></i>
+          </div>
+          <div class="mt-2 flex justify-between text-[10px] text-[#4DA8F7]">
+            <span class="payment-fee">Biaya admin: Rp1.500</span>
+            <span>Instan</span>
+          </div>
+        </div>
+        
+        <div class="bg-[#12294D] rounded border border-[#4A8AE0] p-3 payment-method cursor-pointer hover:border-[#4DA8F7]" data-method="OVO" data-fee="1500" data-category="ewallet">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+              <img alt="OVO e-wallet logo in purple and white colors" class="w-16 h-5 object-contain" height="20" src="https://files.catbox.moe/ybmkkg.jpg" width="64"/>
+              <span>OVO</span>
+            </div>
+            <i class="far fa-circle text-[#4DA8F7]"></i>
+          </div>
+          <div class="mt-2 flex justify-between text-[10px] text-[#4DA8F7]">
+            <span class="payment-fee">Biaya admin: Rp1.500</span>
+            <span>Instan</span>
+          </div>
+        </div>
+        
+        <div class="bg-[#12294D] rounded border border-[#4A8AE0] p-3 payment-method cursor-pointer hover:border-[#4DA8F7]" data-method="ShopeePay" data-fee="0" data-category="ewallet">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+              <img alt="ShopeePay e-wallet logo in orange and white colors" class="w-16 h-5 object-contain" height="20" src="https://files.catbox.moe/w2sqxy.jpg" width="64"/>
+              <span>ShopeePay</span>
+            </div>
+            <i class="far fa-circle text-[#4DA8F7]"></i>
+          </div>
+          <div class="mt-2 flex justify-between text-[10px] text-[#4DA8F7]">
+            <span class="payment-fee">Biaya admin: Rp0</span>
+            <span>Instan</span>
+          </div>
+        </div>
+        
+        <!-- Hidden payment methods -->
+        <div class="bg-[#12294D] rounded border border-[#4A8AE0] p-3 payment-method cursor-pointer hover:border-[#4DA8F7] hidden-payments" data-method="Gopay" data-fee="1500" data-category="ewallet">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+              <img alt="Gopay e-wallet logo in green and white colors" class="w-16 h-5 object-contain" height="20" src="https://files.catbox.moe/vfj1kw.jpg" width="64"/>
+              <span>Gopay</span>
+            </div>
+            <i class="far fa-circle text-[#4DA8F7]"></i>
+          </div>
+          <div class="mt-2 flex justify-between text-[10px] text-[#4DA8F7]">
+            <span class="payment-fee">Biaya admin: Rp1.500</span>
+            <span>Instan</span>
+          </div>
+        </div>
+        
+        <div class="bg-[#12294D] rounded border border-[#4A8AE0] p-3 payment-method cursor-pointer hover:border-[#4DA8F7] hidden-payments" data-method="LinkAja" data-fee="1500" data-category="ewallet">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+              <img alt="LinkAja e-wallet logo in red and white colors" class="w-16 h-5 object-contain" height="20" src="https://files.catbox.moe/bm31y0.jpg" width="64"/>
+              <span>LinkAja</span>
+            </div>
+            <i class="far fa-circle text-[#4DA8F7]"></i>
+          </div>
+          <div class="mt-2 flex justify-between text-[10px] text-[#4DA8F7]">
+            <span class="payment-fee">Biaya admin: Rp1.500</span>
+            <span>Instan</span>
+          </div>
+        </div>
+        
+        <div class="bg-[#12294D] rounded border border-[#4A8AE0] p-3 payment-method cursor-pointer hover:border-[#4DA8F7] hidden-payments" data-method="QRIS" data-fee="0" data-category="qris">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+              <img alt="QRIS payment logo" class="w-16 h-5 object-contain" height="20" src="https://files.catbox.moe/17i6vy.jpg" width="64"/>
+              <span>QRIS</span>
+            </div>
+            <i class="far fa-circle text-[#4DA8F7]"></i>
+          </div>
+          <div class="mt-2 flex justify-between text-[10px] text-[#4DA8F7]">
+            <span class="payment-fee">Biaya admin: Rp0</span>
+            <span>Instan</span>
+          </div>
+        </div>
+        
+        <div class="bg-[#12294D] rounded border border-[#4A8AE0] p-3 payment-method cursor-pointer hover:border-[#4DA8F7] hidden-payments" data-method="Mandiri" data-fee="2500" data-category="bank">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+              <img alt="Mandiri bank logo in green and white colors" class="w-16 h-5 object-contain" height="20" src="https://files.catbox.moe/y5d3xh.jpg" width="64"/>
+              <span>Mandiri Transfer</span>
+            </div>
+            <i class="far fa-circle text-[#4DA8F7]"></i>
+          </div>
+          <div class="mt-2 flex justify-between text-[10px] text-[#4DA8F7]">
+            <span class="payment-fee">Biaya admin: Rp2.500</span>
+            <span>1-3 Jam</span>
+          </div>
+        </div>
+        
+        <div class="bg-[#12294D] rounded border border-[#4A8AE0] p-3 payment-method cursor-pointer hover:border-[#4DA8F7] hidden-payments" data-method="BNI" data-fee="2500" data-category="bank">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+              <img alt="BNI bank logo in blue and white colors" class="w-16 h-5 object-contain" height="20" src="https://files.catbox.moe/lyzlyt.jpg" width="64"/>
+              <span>BNI Transfer</span>
+            </div>
+            <i class="far fa-circle text-[#4DA8F7]"></i>
+          </div>
+          <div class="mt-2 flex justify-between text-[10px] text-[#4DA8F7]">
+            <span class="payment-fee">Biaya admin: Rp2.500</span>
+            <span>1-3 Jam</span>
+          </div>
+        </div>
+        
+        <div class="bg-[#12294D] rounded border border-[#4A8AE0] p-3 payment-method cursor-pointer hover:border-[#4DA8F7] hidden-payments" data-method="BRI" data-fee="2500" data-category="bank">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+              <img alt="BRI bank logo in red and white colors" class="w-16 h-5 object-contain" height="20" src="https://files.catbox.moe/tsosd1.jpg" width="64"/>
+              <span>BRI Transfer</span>
+            </div>
+            <i class="far fa-circle text-[#4DA8F7]"></i>
+          </div>
+          <div class="mt-2 flex justify-between text-[10px] text-[#4DA8F7]">
+            <span class="payment-fee">Biaya admin: Rp2.500</span>
+            <span>1-3 Jam</span>
+          </div>
+        </div>
+        
+        <div class="bg-[#12294D] rounded border border-[#4A8AE0] p-3 payment-method cursor-pointer hover:border-[#4DA8F7] hidden-payments" data-method="BCA VA" data-fee="2500" data-category="va">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+              <img alt="BCA Virtual Account logo" class="w-16 h-5 object-contain" height="20" src="https://files.catbox.moe/qw6jtm.jpg" width="64"/>
+              <span>BCA Virtual Account</span>
+            </div>
+            <i class="far fa-circle text-[#4DA8F7]"></i>
+          </div>
+          <div class="mt-2 flex justify-between text-[10px] text-[#4DA8F7]">
+            <span class="payment-fee">Biaya admin: Rp2.500</span>
+            <span>1-3 Jam</span>
+          </div>
+        </div>
+        
+        <div class="bg-[#12294D] rounded border border-[#4A8AE0] p-3 payment-method cursor-pointer hover:border-[#4DA8F7] hidden-payments" data-method="Alfamart" data-fee="3000" data-category="retail">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+              <img alt="Alfamart retail payment logo" class="w-16 h-5 object-contain" height="20" src="https://files.catbox.moe/4afvek.jpg" width="64"/>
+              <span>Alfamart</span>
+            </div>
+            <i class="far fa-circle text-[#4DA8F7]"></i>
+          </div>
+          <div class="mt-2 flex justify-between text-[10px] text-[#4DA8F7]">
+            <span class="payment-fee">Biaya admin: Rp3.000</span>
+            <span>1-3 Jam</span>
+          </div>
+        </div>
+        
+        <div class="bg-[#12294D] rounded border border-[#4A8AE0] p-3 payment-method cursor-pointer hover:border-[#4DA8F7] hidden-payments" data-method="Indomaret" data-fee="3000" data-category="retail">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+              <img alt="Indomaret retail payment logo" class="w-16 h-5 object-contain" height="20" src="https://files.catbox.moe/1t3wn4.jpg" width="64"/>
+              <span>Indomaret</span>
+            </div>
+            <i class="far fa-circle text-[#4DA8F7]"></i>
+          </div>
+          <div class="mt-2 flex justify-between text-[10px] text-[#4DA8F7]">
+            <span class="payment-fee">Biaya admin: Rp3.000</span>
+            <span>1-3 Jam</span>
+          </div>
+        </div>
+      </div>
+       
+      <button class="bg-[#0A1A35] border border-[#4A8AE0] rounded-md text-white text-xs py-1 px-3 flex items-center space-x-1 mx-auto mt-3 hover:bg-[#12294D] transition" id="showMorePayments" type="button">
+        <span>Tampilkan Lebih Banyak</span>
+        <i class="fas fa-chevron-down text-[10px]"></i>
+      </button>
+    </section>
+
+    <!-- Detail Kontak -->
+    <section class="bg-[#0A1A35] rounded-md p-4 space-y-3 border border-[#4A8AE0] mt-4">
+      <div class="flex items-center space-x-2 text-white font-semibold text-sm">
+        <div class="bg-[#4DA8F7] rounded p-1">
+          <i class="fas fa-address-book"></i>
+        </div>
+        <h2>Detail Kontak</h2>
+      </div>
+      <form class="space-y-3 text-xs text-[#b0b0b0]">
+        <div>
+          <label class="block mb-1 font-semibold text-white" for="email">Email</label>
+          <input class="w-full bg-[#12294D] rounded border border-[#4A8AE0] px-3 py-2 text-xs text-[#b0b0b0] focus:outline-none focus:ring-1 focus:ring-[#4DA8F7]" id="email" placeholder="Contoh: jhon@gmail.com" type="email" required/>
+          <p class="text-[8px] text-[#4DA8F7] mt-1">*Konfirmasi pembayaran akan dikirim ke email ini</p>
+        </div>
+        <div>
+          <label class="block mb-1 font-semibold text-white" for="whatsapp">Nomor Whatsapp</label>
+          <div class="flex">
+            <div class="bg-[#12294D] border border-[#4A8AE0] border-r-0 rounded-l px-3 py-2 flex items-center text-xs">
+              +62
+            </div>
+            <input class="flex-1 bg-[#12294D] rounded-r border border-[#4A8AE0] px-3 py-2 text-xs text-[#b0b0b0] focus:outline-none focus:ring-1 focus:ring-[#4DA8F7]" id="whatsapp" placeholder="8123456789" type="tel" required/>
+          </div>
+          <p class="text-[8px] text-[#4DA8F7] mt-1">*Nomor ini akan digunakan untuk konfirmasi pembayaran</p>
+        </div>
+      </form>
+    </section>
+
+    <!-- Ringkasan Pembelian -->
+    <section class="bg-[#0A1A35] rounded-md p-4 space-y-3 border border-[#4A8AE0] mt-4">
+      <div class="flex items-center space-x-2 text-white font-semibold text-sm">
+        <div class="bg-[#4DA8F7] rounded p-1">
+          <i class="fas fa-receipt"></i>
+        </div>
+        <h2>Ringkasan Pembelian</h2>
+      </div>
+      <div class="bg-[#12294D] rounded border border-[#4A8AE0] p-3 text-xs text-[#b0b0b0] space-y-2" id="orderSummary">
+        <div class="flex justify-between">
+          <span>Produk</span>
+          <span class="text-white" id="productName">12 Diamonds Mobile Legends</span>
+        </div>
+        <div class="flex justify-between">
+          <span>Harga Satuan</span>
+          <span class="text-white" id="unitPrice">Rp3.614</span>
+        </div>
+        <div class="flex justify-between">
+          <span>Jumlah</span>
+          <span class="text-white" id="orderQuantity">1</span>
+        </div>
+        <div class="flex justify-between">
+          <span>Subtotal</span>
+          <span class="text-white" id="subtotal">Rp3.614</span>
+        </div>
+        <div class="flex justify-between">
+          <span>Biaya Admin</span>
+          <span class="text-white" id="adminFee">Rp1.000</span>
+        </div>
+        <div class="flex justify-between border-t border-[#4A8AE0] pt-2">
+          <span class="font-semibold">Total Pembayaran</span>
+          <span class="text-white font-bold" id="totalPayment">Rp4.614</span>
+        </div>
+      </div>
+      <div class="flex items-center text-xs text-[#4DA8F7]">
+        <i class="fas fa-shield-alt mr-2"></i>
+        <span>Pembayaran aman dan terenkripsi</span>
+      </div>
+    </section>
+
+    <!-- Tombol Pembayaran -->
+    <button class="w-full bg-gradient-to-r from-[#4DA8F7] to-[#0077B6] text-white font-bold py-3 rounded-md hover:from-[#3a97e6] hover:to-[#0067A6] transition shadow-lg mt-4" id="checkoutButton" type="button">
+      LANJUTKAN PEMBAYARAN
+    </button>
+
+    <!-- Informasi Tambahan -->
+    <div class="bg-[#0A1A35] rounded-md p-4 space-y-2 text-xs text-[#b0b0b0] border border-[#4A8AE0] mt-4">
+      <div class="flex items-center space-x-2">
+        <i class="fas fa-clock text-[#4DA8F7]"></i>
+        <span>Proses top up: 1-5 menit setelah pembayaran</span>
+      </div>
+      <div class="flex items-center space-x-2">
+        <i class="fas fa-exchange-alt text-[#4DA8F7]"></i>
+        <span>Pengembalian dana tidak tersedia setelah pembelian</span>
+      </div>
+      <div class="flex items-center space-x-2">
+        <i class="fas fa-lock text-[#4DA8F7]"></i>
+        <span>Data pribadi Anda aman bersama kami</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Order Confirmation Modal -->
+  <div id="orderModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-[#0A1A35] rounded-lg p-6 max-w-sm w-full border border-[#4DA8F7]">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-white font-bold text-lg">Order Confirmation</h3>
+        <button id="closeModal" class="text-[#4DA8F7] hover:text-white">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="text-white text-sm mb-4">
+        <p>Your order has been successfully submitted!</p>
+        <p class="mt-2">We will process your order shortly.</p>
+      </div>
+      <div class="flex justify-end">
+        <button id="confirmModal" class="bg-[#4DA8F7] text-white px-4 py-2 rounded hover:bg-[#3a97e6]">
+          OK
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+      apiKey: "AIzaSyCNuIt-TivFbf62cTrBgXqfPsW2SJQq5Lk",
+      authDomain: "live-chat-ojipedia.firebaseapp.com",
+      databaseURL: "https://live-chat-ojipedia-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "live-chat-ojipedia",
+      storageBucket: "live-chat-ojipedia.firebasestorage.app",
+      messagingSenderId: "757508069111",
+      appId: "1:757508069111:web:f6210f5351f84f3d1e25f2",
+      measurementId: "G-WBZ77YVVWQ"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    // Store order data
+    let orderData = {
+      diamondAmount: 12,
+      diamondPrice: 3614,
+      quantity: 1,
+      paymentMethod: 'DANA',
+      adminFee: 1000,
+      promoCode: '',
+      discount: 0,
+      subtotal: 3614,
+      total: 4614,
+      status: 'pending',
+      timestamp: null
+    };
+
+    // Simple interaction for diamond selection
+    document.querySelectorAll('.diamond-option').forEach(option => {
+      option.addEventListener('click', function() {
+        document.querySelectorAll('.diamond-option').forEach(opt => {
+          opt.classList.remove('selected-diamond');
+        });
+        this.classList.add('selected-diamond');
+        
+        // Update order data
+        orderData.diamondAmount = parseInt(this.dataset.diamond);
+        orderData.diamondPrice = parseInt(this.dataset.price);
+        updateOrderSummary();
+      });
+    });
+    
+    // Simple interaction for payment method selection
+    document.querySelectorAll('.payment-method').forEach(method => {
+      method.addEventListener('click', function() {
+        document.querySelectorAll('.payment-method i').forEach(icon => {
+          icon.classList.remove('fa-check-circle');
+          icon.classList.add('fa-circle');
+        });
+        const checkIcon = this.querySelector('i');
+        checkIcon.classList.remove('fa-circle');
+        checkIcon.classList.add('fa-check-circle');
+        
+        // Update order data
+        orderData.paymentMethod = this.dataset.method;
+        orderData.adminFee = parseInt(this.dataset.fee);
+        updateOrderSummary();
+      });
+    });
+
+    // Quantity controls
+    document.getElementById('increaseQuantity').addEventListener('click', function() {
+      orderData.quantity += 1;
+      document.getElementById('quantity').textContent = orderData.quantity;
+      updateOrderSummary();
+    });
+
+    document.getElementById('decreaseQuantity').addEventListener('click', function() {
+      if (orderData.quantity > 1) {
+        orderData.quantity -= 1;
+        document.getElementById('quantity').textContent = orderData.quantity;
+        updateOrderSummary();
+      }
+    });
+
+    // Apply promo code
+    document.getElementById('applyPromo').addEventListener('click', function() {
+      const promoCode = document.getElementById('promoCode').value;
+      if (promoCode === 'ML10') {
+        orderData.promoCode = promoCode;
+        orderData.discount = Math.floor(orderData.subtotal * 0.1);
+        alert('Promo ML10 berhasil diterapkan! Diskon 10%');
+        updateOrderSummary();
+      } else if (promoCode === 'MLNEW') {
+        orderData.promoCode = promoCode;
+        orderData.discount = Math.floor(orderData.subtotal * 0.15);
+        alert('Promo MLNEW berhasil diterapkan! Diskon 15%');
+        updateOrderSummary();
+      } else if (promoCode) {
+        alert('Kode promo tidak valid');
+      }
+    });
+
+    // Update order summary
+    function updateOrderSummary() {
+      orderData.subtotal = orderData.diamondPrice * orderData.quantity;
+      orderData.total = orderData.subtotal + orderData.adminFee - orderData.discount;
+      
+      document.getElementById('productName').textContent = `${orderData.diamondAmount} Diamonds Mobile Legends`;
+      document.getElementById('unitPrice').textContent = `Rp${formatNumber(orderData.diamondPrice)}`;
+      document.getElementById('orderQuantity').textContent = orderData.quantity;
+      document.getElementById('subtotal').textContent = `Rp${formatNumber(orderData.subtotal)}`;
+      document.getElementById('adminFee').textContent = `Rp${formatNumber(orderData.adminFee)}`;
+      
+      if (orderData.discount > 0) {
+        // Add discount row if not exists
+        if (!document.getElementById('discountRow')) {
+          const subtotalRow = document.querySelector('#orderSummary div:nth-child(4)');
+          const discountRow = document.createElement('div');
+          discountRow.className = 'flex justify-between';
+          discountRow.id = 'discountRow';
+          discountRow.innerHTML = `
+            <span>Diskon</span>
+            <span class="text-white" id="discountAmount">-Rp${formatNumber(orderData.discount)}</span>
+          `;
+          subtotalRow.after(discountRow);
+        } else {
+          document.getElementById('discountAmount').textContent = `-Rp${formatNumber(orderData.discount)}`;
+        }
+      } else {
+        // Remove discount row if exists
+        const discountRow = document.getElementById('discountRow');
+        if (discountRow) {
+          discountRow.remove();
+        }
+      }
+      
+      document.getElementById('totalPayment').textContent = `Rp${formatNumber(orderData.total)}`;
+    }
+
+    // Format number with thousand separator
+    function formatNumber(num) {
+      return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+
+    // Checkout button
+    document.getElementById('checkoutButton').addEventListener('click', function() {
+      // Validate form
+      const userId = document.getElementById('userId').value;
+      const serverId = document.getElementById('serverId').value;
+      const email = document.getElementById('email').value;
+      const whatsapp = document.getElementById('whatsapp').value;
+      
+      if (!userId || !serverId || !email || !whatsapp) {
+        alert('Harap lengkapi semua data yang diperlukan!');
+        return;
+      }
+      
+      // Collect all order data
+      const nickname = document.getElementById('nickname').value;
+      const fullWhatsapp = `62${whatsapp}`;
+      
+      const orderDetails = {
+        game: 'Mobile Legends',
+        diamondAmount: orderData.diamondAmount,
+        diamondPrice: orderData.diamondPrice,
+        quantity: orderData.quantity,
+        subtotal: orderData.subtotal,
+        adminFee: orderData.adminFee,
+        discount: orderData.discount,
+        total: orderData.total,
+        paymentMethod: orderData.paymentMethod,
+        userId: userId,
+        serverId: serverId,
+        nickname: nickname,
+        email: email,
+        whatsapp: fullWhatsapp,
+        promoCode: orderData.promoCode,
+        status: 'pending',
+        timestamp: new Date().toISOString()
+      };
+      
+      // Save order to Firebase
+      saveOrderToFirebase(orderDetails);
+    });
+
+    // Function to save order to Firebase
+    function saveOrderToFirebase(orderDetails) {
+      const ordersRef = database.ref('orders');
+      const newOrderRef = ordersRef.push();
+      
+      newOrderRef.set(orderDetails)
+        .then(() => {
+          // Show success modal
+          document.getElementById('orderModal').classList.remove('hidden');
+          
+          // Reset form
+          document.getElementById('userId').value = '';
+          document.getElementById('serverId').value = '';
+          document.getElementById('nickname').value = '';
+          document.getElementById('email').value = '';
+          document.getElementById('whatsapp').value = '';
+          document.getElementById('promoCode').value = '';
+          
+          // Reset order data
+          orderData = {
+            diamondAmount: 12,
+            diamondPrice: 3614,
+            quantity: 1,
+            paymentMethod: 'DANA',
+            adminFee: 1000,
+            promoCode: '',
+            discount: 0,
+            subtotal: 3614,
+            total: 4614,
+            status: 'pending',
+            timestamp: null
+          };
+          
+          // Update UI
+          updateOrderSummary();
+          document.getElementById('quantity').textContent = '1';
+        })
+        .catch((error) => {
+          console.error('Error saving order:', error);
+          alert('Terjadi kesalahan saat menyimpan pesanan. Silakan coba lagi.');
+        });
+    }
+
+    // Close modal
+    document.getElementById('closeModal').addEventListener('click', function() {
+      document.getElementById('orderModal').classList.add('hidden');
+    });
+
+    document.getElementById('confirmModal').addEventListener('click', function() {
+      document.getElementById('orderModal').classList.add('hidden');
+    });
+    
+    // Show more diamonds functionality
+    document.getElementById('showMoreDiamonds').addEventListener('click', function() {
+      const hiddenDiamonds = document.querySelectorAll('.hidden-diamonds');
+      const button = this;
+      
+      hiddenDiamonds.forEach(diamond => {
+        diamond.classList.remove('hidden-diamonds');
+      });
+      
+      // Hide the button after showing all diamonds
+      button.style.display = 'none';
+    });
+    
+    // Show more payments functionality
+    document.getElementById('showMorePayments').addEventListener('click', function() {
+      const hiddenPayments = document.querySelectorAll('.hidden-payments');
+      const button = this;
+      
+      hiddenPayments.forEach(payment => {
+        payment.classList.remove('hidden-payments');
+      });
+      
+      // Hide the button after showing all payments
+      button.style.display = 'none';
+    });
+    
+    // Payment category filtering
+    document.querySelectorAll('.payment-category').forEach(button => {
+      button.addEventListener('click', function() {
+        const category = this.dataset.category;
+        
+        // Update active state
+        document.querySelectorAll('.payment-category').forEach(btn => {
+          btn.classList.remove('active');
+        });
+        this.classList.add('active');
+        
+        // Show all payment methods first
+        document.querySelectorAll('.payment-method').forEach(method => {
+          method.style.display = 'block';
+        });
+        
+        // Filter if not "all" category
+        if (category !== 'all') {
+          document.querySelectorAll('.payment-method').forEach(method => {
+            if (method.dataset.category !== category) {
+              method.style.display = 'none';
+            }
+          });
+        }
+        
+        // Always show the show more button
+        document.getElementById('showMorePayments').style.display = 'block';
+      });
+    });
+  </script>
+</body>
+</html>
